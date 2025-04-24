@@ -13,212 +13,193 @@ const settingsStore = useSettingsStore()
 export type SafeAny = any
 
 const chillerRunningStatus = (startTime: string, endTime: string) => ({
-  "filters": {
-    "sensor_name": "Compressor_Current_Draw_%",
-    "equipment_type": "Chiller",
-    "facility_name": "HAECO"
+  filters: {
+    sensor_name: 'Compressor_Current_Draw_%',
+    equipment_type: 'Chiller',
+    facility_name: 'HAECO',
   },
-  "seriesOverrides": {
-    "type": "bar",
-    "opacity": 1,
-    "xbins": {
-      "size": 1
+  seriesOverrides: {
+    type: 'bar',
+    opacity: 1,
+    xbins: {
+      size: 1,
     },
-    "ybins": {
-      "size": 1
+    ybins: {
+      size: 1,
     },
-    "horizontalBarMode": false,
-    "horizontalSummaryMode": false,
-    "customUnit": null
+    horizontalBarMode: false,
+    horizontalSummaryMode: false,
+    customUnit: null,
   },
-  "pipeline": [
+  pipeline: [
     {
-      "type": "calculate_global",
-      "formula": "df > 0"
+      type: 'calculate_global',
+      formula: 'df > 0',
     },
     {
-      "type": "calculate_global",
-      "formula": "df.rename(columns = dict(zip(df.columns, df.columns.map(lambda x: x.split(' - ')[0])))) # remove sensor_name from column"
-    }
+      type: 'calculate_global',
+      formula:
+        "df.rename(columns = dict(zip(df.columns, df.columns.map(lambda x: x.split(' - ')[0])))) # remove sensor_name from column",
+    },
   ],
-  "offsetRange": false,
-  "offsetRangeStartOnly": false,
-  "offsetType": "months",
-  "offsetAmount": 1,
-  "showLayoutOptions": true,
-  "parameters": {},
-  "date_range": [
-    startTime,
-    endTime
-  ]
+  offsetRange: false,
+  offsetRangeStartOnly: false,
+  offsetType: 'months',
+  offsetAmount: 1,
+  showLayoutOptions: true,
+  parameters: {},
+  date_range: [startTime, endTime],
 })
 const cdwpRunningStatus = (startTime: string, endTime: string) => ({
-  "filters": {
-    "sensor_name": "on",
-    "equipment_type": "Condenser_Pump",
-    "facility_name": "HAECO"
+  filters: {
+    sensor_name: 'on',
+    equipment_type: 'Condenser_Pump',
+    facility_name: 'HAECO',
   },
-  "seriesOverrides": {
-    "type": "bar",
-    "opacity": 1,
-    "xbins": {
-      "size": 1
+  seriesOverrides: {
+    type: 'bar',
+    opacity: 1,
+    xbins: {
+      size: 1,
     },
-    "ybins": {
-      "size": 1
+    ybins: {
+      size: 1,
     },
-    "horizontalBarMode": false,
-    "horizontalSummaryMode": false,
-    "customUnit": null
+    horizontalBarMode: false,
+    horizontalSummaryMode: false,
+    customUnit: null,
   },
-  "pipeline": [
+  pipeline: [
     {
-      "type": "calculate_global",
-      "formula": "df.rename(columns = dict(zip(df.columns, df.columns.map(lambda x: x.split(' - ')[0])))) # remove sensor_name from column"
-    }
+      type: 'calculate_global',
+      formula:
+        "df.rename(columns = dict(zip(df.columns, df.columns.map(lambda x: x.split(' - ')[0])))) # remove sensor_name from column",
+    },
   ],
-  "offsetRange": false,
-  "offsetRangeStartOnly": false,
-  "offsetType": "months",
-  "offsetAmount": 1,
-  "showLayoutOptions": true,
-  "parameters": {},
-  "date_range": [
-    startTime,
-    endTime
-  ]
+  offsetRange: false,
+  offsetRangeStartOnly: false,
+  offsetType: 'months',
+  offsetAmount: 1,
+  showLayoutOptions: true,
+  parameters: {},
+  date_range: [startTime, endTime],
 })
 const coolingTowerRunningStatus = (startTime: string, endTime: string) => ({
-  "filters": {
-    "sensor_name": "on",
-    "equipment_type": "Cooling_Tower",
-    "facility_name": "HAECO"
+  filters: {
+    sensor_name: 'on',
+    equipment_type: 'Cooling_Tower',
+    facility_name: 'HAECO',
   },
-  "seriesOverrides": {
-    "type": "bar",
-    "opacity": 1,
-    "xbins": {
-      "size": 1
+  seriesOverrides: {
+    type: 'bar',
+    opacity: 1,
+    xbins: {
+      size: 1,
     },
-    "ybins": {
-      "size": 1
+    ybins: {
+      size: 1,
     },
-    "horizontalBarMode": false,
-    "horizontalSummaryMode": false,
-    "customUnit": null
+    horizontalBarMode: false,
+    horizontalSummaryMode: false,
+    customUnit: null,
   },
-  "pipeline": [
+  pipeline: [
     {
-      "type": "calculate_global",
-      "formula": "df.rename(columns = dict(zip(df.columns, df.columns.map(lambda x: x.split(' - ')[0])))) # remove sensor_name from column"
-    }
+      type: 'calculate_global',
+      formula:
+        "df.rename(columns = dict(zip(df.columns, df.columns.map(lambda x: x.split(' - ')[0])))) # remove sensor_name from column",
+    },
   ],
-  "offsetRange": false,
-  "offsetRangeStartOnly": false,
-  "offsetType": "months",
-  "offsetAmount": 1,
-  "showLayoutOptions": true,
-  "parameters": {},
-  "date_range": [
-    startTime,
-    endTime
-  ]
+  offsetRange: false,
+  offsetRangeStartOnly: false,
+  offsetType: 'months',
+  offsetAmount: 1,
+  showLayoutOptions: true,
+  parameters: {},
+  date_range: [startTime, endTime],
 })
 const chillerPower = (startTime: string, endTime: string) => ({
-  "filters": {
-    "sensor_name": "Power",
-    "equipment_type": "Chiller",
-    "facility_name": "HAECO"
+  filters: {
+    sensor_name: 'Power',
+    equipment_type: 'Chiller',
+    facility_name: 'HAECO',
   },
-  "seriesOverrides": {
-    "type": "scatter",
-    "opacity": 1,
-    "xbins": {
-      "size": 1
+  seriesOverrides: {
+    type: 'scatter',
+    opacity: 1,
+    xbins: {
+      size: 1,
     },
-    "ybins": {
-      "size": 1
+    ybins: {
+      size: 1,
     },
-    "fill": "tonexty",
-    "mode": "none",
-    "stackgroup": "One"
+    fill: 'tonexty',
+    mode: 'none',
+    stackgroup: 'One',
   },
-  "pipeline": [
+  pipeline: [
     {
-      "type": "select_series",
-      "series": [
-        "Chiller4 - Power",
-        "Chiller1 - Power",
-        "Chiller3 - Power"
-      ]
-    }
+      type: 'select_series',
+      series: ['Chiller4 - Power', 'Chiller1 - Power', 'Chiller3 - Power'],
+    },
   ],
-  "offsetRange": false,
-  "offsetType": "months",
-  "offsetAmount": 1,
-  "parameters": {},
-  "date_range": [
-    startTime,
-    endTime
-  ]
+  offsetRange: false,
+  offsetType: 'months',
+  offsetAmount: 1,
+  parameters: {},
+  date_range: [startTime, endTime],
 })
 const cdwpPower = (startTime: string, endTime: string) => ({
-  "filters": {
-    "sensor_name": "Power",
-    "equipment_type": "Condenser_Pump",
-    "facility_name": "HAECO"
+  filters: {
+    sensor_name: 'Power',
+    equipment_type: 'Condenser_Pump',
+    facility_name: 'HAECO',
   },
-  "seriesOverrides": {
-    "type": "scatter",
-    "opacity": 1,
-    "xbins": {
-      "size": 1
+  seriesOverrides: {
+    type: 'scatter',
+    opacity: 1,
+    xbins: {
+      size: 1,
     },
-    "ybins": {
-      "size": 1
+    ybins: {
+      size: 1,
     },
-    "fill": "tonexty",
-    "mode": "none",
-    "stackgroup": "One"
+    fill: 'tonexty',
+    mode: 'none',
+    stackgroup: 'One',
   },
-  "pipeline": [],
-  "offsetRange": false,
-  "offsetType": "months",
-  "offsetAmount": 1,
-  "parameters": {},
-  "date_range": [
-    startTime,
-    endTime
-  ]
+  pipeline: [],
+  offsetRange: false,
+  offsetType: 'months',
+  offsetAmount: 1,
+  parameters: {},
+  date_range: [startTime, endTime],
 })
 const ctPower = (startTime: string, endTime: string) => ({
-  "filters": {
-    "sensor_name": "Power",
-    "equipment_type": "Cooling_Tower",
-    "facility_name": "HAECO"
+  filters: {
+    sensor_name: 'Power',
+    equipment_type: 'Cooling_Tower',
+    facility_name: 'HAECO',
   },
-  "seriesOverrides": {
-    "type": "scatter",
-    "opacity": 1,
-    "xbins": {
-      "size": 1
+  seriesOverrides: {
+    type: 'scatter',
+    opacity: 1,
+    xbins: {
+      size: 1,
     },
-    "ybins": {
-      "size": 1
+    ybins: {
+      size: 1,
     },
-    "fill": "tonexty",
-    "mode": "none",
-    "stackgroup": "One"
+    fill: 'tonexty',
+    mode: 'none',
+    stackgroup: 'One',
   },
-  "pipeline": [],
-  "offsetRange": false,
-  "offsetType": "months",
-  "offsetAmount": 1,
-  "parameters": {},
-  "date_range": [
-    startTime,
-    endTime
-  ]
+  pipeline: [],
+  offsetRange: false,
+  offsetType: 'months',
+  offsetAmount: 1,
+  parameters: {},
+  date_range: [startTime, endTime],
 })
 const methodMap = new Map<string, (startTime: string, endTime: string) => object>([
   ['chillerRunningStatus', chillerRunningStatus],
@@ -226,7 +207,7 @@ const methodMap = new Map<string, (startTime: string, endTime: string) => object
   ['coolingTowerRunningStatus', coolingTowerRunningStatus],
   ['chillerPower', chillerPower],
   ['cdwpPower', cdwpPower],
-  ['ctPower', ctPower]
+  ['ctPower', ctPower],
 ])
 
 // 运行机组 [1,2,3] -> [Chiller1, Chiller3, Chiller4]
@@ -250,7 +231,7 @@ const coverChillerData = (data: SafeAny) => {
       y: Chiller4.map((item: SafeAny) => (Number.isNaN(item) ? null : item)),
       name: 'Chiller4',
       type: 'bar',
-    }
+    },
   ]
 }
 // 水泵_A+水泵_B [1,2,3][1,2] -> [CDWP1, CDWP2, CDWP3, CDWP4, CDWP5]
@@ -286,7 +267,7 @@ const coverCdwpData = (data: SafeAny) => {
       y: CDWP5.map((item: SafeAny) => (Number.isNaN(item) ? null : item)),
       name: 'CDWP5',
       type: 'bar',
-    }
+    },
   ]
 }
 // 冷却塔_A+冷却塔_B [1,2][1] -> [CT1, CT2, CT4]
@@ -310,14 +291,20 @@ const coverCoolingTowerData = (data: SafeAny) => {
       y: CT4.map((item: SafeAny) => (Number.isNaN(item) ? null : item)),
       name: 'CT4',
       type: 'bar',
-    }
+    },
   ]
 }
 // 机组能耗(kW) 运行机组[1,2,3] -> [Chiller1, Chiller3, Chiller4]
 const coverChillerPowerData = (data: SafeAny) => {
-  const Chiller1 = data['Chiller1 - Power'].map((item: SafeAny) => (Number.isNaN(item) ? null : item))
-  const Chiller3 = data['Chiller3 - Power'].map((item: SafeAny) => (Number.isNaN(item) ? null : item))
-  const Chiller4 = data['Chiller4 - Power'].map((item: SafeAny) => (Number.isNaN(item) ? null : item))
+  const Chiller1 = data['Chiller1 - Power'].map((item: SafeAny) =>
+    Number.isNaN(item) ? null : item,
+  )
+  const Chiller3 = data['Chiller3 - Power'].map((item: SafeAny) =>
+    Number.isNaN(item) ? null : item,
+  )
+  const Chiller4 = data['Chiller4 - Power'].map((item: SafeAny) =>
+    Number.isNaN(item) ? null : item,
+  )
   const timestamp = data.timestamp
   return [
     {
@@ -378,7 +365,7 @@ const coverCdwpPowerData = (data: SafeAny) => {
       y: CDWP5,
       name: 'CDWP5 - Power - Chiller Plant Power Log_CDWP 5kW, PowerMeter (kW)',
       type: 'bar',
-    }
+    },
   ]
 }
 // 冷却塔能耗_A(kW)+冷却塔能耗_B(kW) 冷却塔_A+冷却塔_B[1,2][1] -> [CT1, CT2, CT4]
@@ -405,7 +392,7 @@ const coverCtPowerData = (data: SafeAny) => {
       y: CT4,
       name: 'CT4 - Power - Chiller Plant Power Log_CT 4kW, PowerMeter (kW)',
       type: 'bar',
-    }
+    },
   ]
 }
 const dataMap = new Map<string, (data: SafeAny) => object>([
@@ -414,7 +401,7 @@ const dataMap = new Map<string, (data: SafeAny) => object>([
   ['coolingTowerRunningStatus', coverCoolingTowerData],
   ['chillerPower', coverChillerPowerData],
   ['cdwpPower', coverCdwpPowerData],
-  ['ctPower', coverCtPowerData]
+  ['ctPower', coverCtPowerData],
 ])
 
 export const fetchCarnotData = async (method: string, [startTime, endTime]: string[]) => {
@@ -427,14 +414,14 @@ export const fetchCarnotData = async (method: string, [startTime, endTime]: stri
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
-        'Authorization': `Bearer ${token}`
+        Authorization: `Bearer ${token}`,
       },
       // body: JSON.stringify(methodMap.get(method)?.(startTime, `${endTime} 23:59:59`) ?? {}),
       body: JSON.stringify(methodMap.get(method)?.(startTime, endTime) ?? {}),
     })
 
     // const data = await response.json()
-    const data = eval('(' + await response.text() + ')')
+    const data = eval('(' + (await response.text()) + ')')
     // console.log({ data })
     if (data.message) throw new Error(data.message)
 

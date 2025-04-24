@@ -14,36 +14,27 @@ watch(route, (to) => {
 <template>
   <el-container>
     <el-aside width="200px">
-      <el-menu :default-active="routeName" router>
-        <el-menu-item index="home" route="/">
-          Settings
-        </el-menu-item>
-        <el-menu-item index="chiller" route="/chiller">
-          Status - Chiller
-        </el-menu-item>
-        <el-menu-item index="cdwp" route="/cdwp">
-          Status - CDWP
-        </el-menu-item>
-        <el-menu-item index="cooling-tower" route="/cooling-tower">
-          Status - Cooling Tower
-        </el-menu-item>
-        <el-menu-item index="chiller-power" route="/chiller-power">
-          Power - Chiller
-        </el-menu-item>
-        <el-menu-item index="cdwp-power" route="/cdwp-power">
-          Power - CDWP
-        </el-menu-item>
-        <el-menu-item index="ct-power" route="/ct-power">
-          Power - Cooling Tower
-        </el-menu-item>
-      </el-menu>
+      <el-affix :offset="16">
+        <el-menu :default-active="routeName" router>
+          <el-menu-item index="home" route="/"> Settings </el-menu-item>
+          <el-menu-item index="chiller" route="/chiller"> Status - Chiller </el-menu-item>
+          <el-menu-item index="cdwp" route="/cdwp"> Status - CDWP </el-menu-item>
+          <el-menu-item index="cooling-tower" route="/cooling-tower">
+            Status - Cooling Tower
+          </el-menu-item>
+          <el-menu-item index="chiller-power" route="/chiller-power">
+            Power - Chiller
+          </el-menu-item>
+          <el-menu-item index="cdwp-power" route="/cdwp-power"> Power - CDWP </el-menu-item>
+          <el-menu-item index="ct-power" route="/ct-power"> Power - Cooling Tower </el-menu-item>
+        </el-menu>
+      </el-affix>
     </el-aside>
 
     <el-main>
       <RouterView />
     </el-main>
   </el-container>
-
 </template>
 
 <!-- <style scoped>

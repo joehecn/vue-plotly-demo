@@ -1,6 +1,4 @@
-<template>
-  about
-</template>
+<template>about</template>
 <!--
 <style>
 @media (min-width: 1024px) {

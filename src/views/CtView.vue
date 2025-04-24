@@ -55,13 +55,13 @@ const layout1 = {
   barmode: 'stack',
   yaxis: {
     tickformat: 'd', // 设置刻度格式为整数
-    dtick: 1,        // 设置刻度间隔为 1
+    dtick: 1, // 设置刻度间隔为 1
   },
   legend: {
     x: 0, // 图例的水平位置 (0 表示左对齐，1 表示右对齐)
-    y: 0, // 图例的垂直位置 (0 表示底部，1 表示顶部)
+    y: -0.15, // 图例的垂直位置 (0 表示底部，1 表示顶部)
     xanchor: 'left', // 水平对齐方式 ('left', 'center', 'right')
-    yanchor: 'top',   // 垂直对齐方式 ('top', 'middle', 'bottom')
+    yanchor: 'top', // 垂直对齐方式 ('top', 'middle', 'bottom')
     orientation: 'h', // 图例方向 ('v' 表示垂直, 'h' 表示水平)
   },
 }
@@ -72,13 +72,13 @@ const layout2 = {
   barmode: 'stack',
   yaxis: {
     tickformat: 'd', // 设置刻度格式为整数
-    dtick: 1,        // 设置刻度间隔为 1
+    dtick: 1, // 设置刻度间隔为 1
   },
   legend: {
     x: 0, // 图例的水平位置 (0 表示左对齐，1 表示右对齐)
-    y: 0, // 图例的垂直位置 (0 表示底部，1 表示顶部)
+    y: -0.15, // 图例的垂直位置 (0 表示底部，1 表示顶部)
     xanchor: 'left', // 水平对齐方式 ('left', 'center', 'right')
-    yanchor: 'top',   // 垂直对齐方式 ('top', 'middle', 'bottom')
+    yanchor: 'top', // 垂直对齐方式 ('top', 'middle', 'bottom')
     orientation: 'h', // 图例方向 ('v' 表示垂直, 'h' 表示水平)
   },
 }
@@ -114,18 +114,26 @@ onMounted(async () => {
   } else {
     datetimerange.value = [
       dayjs(now).startOf('D').subtract(1, 'M').add(1, 'day').format('YYYY-MM-DD'),
-      dayjs(now).startOf('D').format('YYYY-MM-DD')
+      dayjs(now).startOf('D').format('YYYY-MM-DD'),
     ]
   }
   await refreshData()
-});
+})
 </script>
 
 <template>
   <h1>Status - Cooling Tower</h1>
 
-  <el-date-picker v-model="datetimerange" value-format="YYYY-MM-DD" type="daterange" range-separator="To"
-    start-placeholder="Start date" end-placeholder="End date" :shortcuts="shortcuts" @change="onDatetimerangeChange" />
+  <el-date-picker
+    v-model="datetimerange"
+    value-format="YYYY-MM-DD"
+    type="daterange"
+    range-separator="To"
+    start-placeholder="Start date"
+    end-placeholder="End date"
+    :shortcuts="shortcuts"
+    @change="onDatetimerangeChange"
+  />
 
   <div v-loading="loading1">
     <VuePlotly :data="chartData1" :layout="layout1" :display-mode-bar="false"></VuePlotly>

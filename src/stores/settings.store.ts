@@ -57,7 +57,10 @@ export const useSettingsStore = defineStore('settings', () => {
     if (records.value.length === 0) return []
     const startTime = records.value[0]['时间戳']
     const endTime = records.value[records.value.length - 1]['时间戳']
-    return [dayjs(startTime, 'M/D/YYYY H:mm').format('YYYY-MM-DD'), dayjs(endTime, 'M/D/YYYY H:mm').format('YYYY-MM-DD')]
+    return [
+      dayjs(startTime, 'M/D/YYYY H:mm').format('YYYY-MM-DD'),
+      dayjs(endTime, 'M/D/YYYY H:mm').format('YYYY-MM-DD'),
+    ]
   })
 
   const heads = computed(() => {
@@ -78,15 +81,19 @@ export const useSettingsStore = defineStore('settings', () => {
       [3, Chiller4],
     ])
 
-    for (let time = dayjs(startTime, 'YYYY-MM-DD'); dayjs(time).isBefore(dayjs(endTime, 'YYYY-MM-DD HH:mm:ss')); time = time.add(15, 'minute')) {
+    for (
+      let time = dayjs(startTime, 'YYYY-MM-DD');
+      dayjs(time).isBefore(dayjs(endTime, 'YYYY-MM-DD HH:mm:ss'));
+      time = time.add(15, 'minute')
+    ) {
       timestamp.push(time.format('YYYY-MM-DD HH:mm:ss'))
       const recordTime = time.format('M/D/YYYY H:mm')
 
       if (recordMap.value.has(recordTime)) {
         const record = recordMap.value.get(recordTime)
 
-        const chillers = JSON.parse(record['运行机组']);
-        ([1, 2, 3]).forEach((chiller: number) => {
+        const chillers = JSON.parse(record['运行机组'])
+        ;[1, 2, 3].forEach((chiller: number) => {
           if (chillers.includes(chiller)) {
             chillerMap.get(chiller)!.push(true)
           } else {
@@ -94,7 +101,7 @@ export const useSettingsStore = defineStore('settings', () => {
           }
         })
       } else {
-        ([1, 2, 3]).forEach((chiller: number) => {
+        ;[1, 2, 3].forEach((chiller: number) => {
           chillerMap.get(chiller)!.push(null)
         })
       }
@@ -118,7 +125,7 @@ export const useSettingsStore = defineStore('settings', () => {
         y: Chiller4,
         name: 'Chiller4',
         type: 'bar',
-      }
+      },
     ]
   }
   // 水泵_A+水泵_B [1,2,3][1,2] -> [CDWP1, CDWP2, CDWP3, CDWP4, CDWP5]
@@ -138,15 +145,19 @@ export const useSettingsStore = defineStore('settings', () => {
       ['水泵_B2', CDWP5],
     ])
 
-    for (let time = dayjs(startTime, 'YYYY-MM-DD'); dayjs(time).isBefore(dayjs(endTime, 'YYYY-MM-DD HH:mm:ss')); time = time.add(15, 'minute')) {
+    for (
+      let time = dayjs(startTime, 'YYYY-MM-DD');
+      dayjs(time).isBefore(dayjs(endTime, 'YYYY-MM-DD HH:mm:ss'));
+      time = time.add(15, 'minute')
+    ) {
       timestamp.push(time.format('YYYY-MM-DD HH:mm:ss'))
       const recordTime = time.format('M/D/YYYY H:mm')
 
       if (recordMap.value.has(recordTime)) {
         const record = recordMap.value.get(recordTime)
 
-        const cdwpAs = JSON.parse(record['水泵_A']);
-        ([1, 2, 3]).forEach((chiller: number) => {
+        const cdwpAs = JSON.parse(record['水泵_A'])
+        ;[1, 2, 3].forEach((chiller: number) => {
           if (cdwpAs.includes(chiller)) {
             cdwpMap.get(`水泵_A${chiller}`)!.push(1.0)
           } else {
@@ -154,8 +165,8 @@ export const useSettingsStore = defineStore('settings', () => {
           }
         })
 
-        const cdwpBs = JSON.parse(record['水泵_B']);
-        ([1, 2]).forEach((chiller: number) => {
+        const cdwpBs = JSON.parse(record['水泵_B'])
+        ;[1, 2].forEach((chiller: number) => {
           if (cdwpBs.includes(chiller)) {
             cdwpMap.get(`水泵_B${chiller}`)!.push(1.0)
           } else {
@@ -163,10 +174,10 @@ export const useSettingsStore = defineStore('settings', () => {
           }
         })
       } else {
-        ([1, 2, 3]).forEach((chiller: number) => {
+        ;[1, 2, 3].forEach((chiller: number) => {
           cdwpMap.get(`水泵_A${chiller}`)!.push(null)
-        });
-        ([1, 2]).forEach((chiller: number) => {
+        })
+        ;[1, 2].forEach((chiller: number) => {
           cdwpMap.get(`水泵_B${chiller}`)!.push(null)
         })
       }
@@ -202,7 +213,7 @@ export const useSettingsStore = defineStore('settings', () => {
         y: CDWP5,
         name: 'CDWP5',
         type: 'bar',
-      }
+      },
     ]
   }
   // 冷却塔_A+冷却塔_B [1,2][1] -> [CT1, CT2, CT4]
@@ -218,15 +229,19 @@ export const useSettingsStore = defineStore('settings', () => {
       ['冷却塔_B1', CT4],
     ])
 
-    for (let time = dayjs(startTime, 'YYYY-MM-DD'); dayjs(time).isBefore(dayjs(endTime, 'YYYY-MM-DD HH:mm:ss')); time = time.add(15, 'minute')) {
+    for (
+      let time = dayjs(startTime, 'YYYY-MM-DD');
+      dayjs(time).isBefore(dayjs(endTime, 'YYYY-MM-DD HH:mm:ss'));
+      time = time.add(15, 'minute')
+    ) {
       timestamp.push(time.format('YYYY-MM-DD HH:mm:ss'))
       const recordTime = time.format('M/D/YYYY H:mm')
 
       if (recordMap.value.has(recordTime)) {
         const record = recordMap.value.get(recordTime)
 
-        const ctAs = JSON.parse(record['冷却塔_A']);
-        ([1, 2]).forEach((chiller: number) => {
+        const ctAs = JSON.parse(record['冷却塔_A'])
+        ;[1, 2].forEach((chiller: number) => {
           if (ctAs.includes(chiller)) {
             ctMap.get(`冷却塔_A${chiller}`)!.push(1.0)
           } else {
@@ -234,8 +249,8 @@ export const useSettingsStore = defineStore('settings', () => {
           }
         })
 
-        const ctBs = JSON.parse(record['冷却塔_B']);
-        ([1]).forEach((chiller: number) => {
+        const ctBs = JSON.parse(record['冷却塔_B'])
+        ;[1].forEach((chiller: number) => {
           if (ctBs.includes(chiller)) {
             ctMap.get(`冷却塔_B${chiller}`)!.push(1.0)
           } else {
@@ -243,10 +258,10 @@ export const useSettingsStore = defineStore('settings', () => {
           }
         })
       } else {
-        ([1, 2]).forEach((chiller: number) => {
+        ;[1, 2].forEach((chiller: number) => {
           ctMap.get(`冷却塔_A${chiller}`)!.push(null)
-        });
-        ([1]).forEach((chiller: number) => {
+        })
+        ;[1].forEach((chiller: number) => {
           ctMap.get(`冷却塔_B${chiller}`)!.push(null)
         })
       }
@@ -270,7 +285,7 @@ export const useSettingsStore = defineStore('settings', () => {
         y: CT4,
         name: 'CT4',
         type: 'bar',
-      }
+      },
     ]
   }
   // 机组能耗(kW) 运行机组[1,2,3] -> [Chiller1, Chiller3, Chiller4]
@@ -286,17 +301,21 @@ export const useSettingsStore = defineStore('settings', () => {
       [3, Chiller4],
     ])
 
-    for (let time = dayjs(startTime, 'YYYY-MM-DD'); dayjs(time).isBefore(dayjs(endTime, 'YYYY-MM-DD HH:mm:ss')); time = time.add(15, 'minute')) {
+    for (
+      let time = dayjs(startTime, 'YYYY-MM-DD');
+      dayjs(time).isBefore(dayjs(endTime, 'YYYY-MM-DD HH:mm:ss'));
+      time = time.add(15, 'minute')
+    ) {
       timestamp.push(time.format('YYYY-MM-DD HH:mm:ss'))
       const recordTime = time.format('M/D/YYYY H:mm')
 
       if (recordMap.value.has(recordTime)) {
         const record = recordMap.value.get(recordTime)
 
-        const chillers = JSON.parse(record['运行机组']);
+        const chillers = JSON.parse(record['运行机组'])
         const recordKw = record['机组能耗(kW)'].replace(/'/g, '')
-        const chillerKws = JSON.parse(recordKw);
-        ([1, 2, 3]).forEach((chiller: number) => {
+        const chillerKws = JSON.parse(recordKw)
+        ;[1, 2, 3].forEach((chiller: number) => {
           const index = chillers.indexOf(chiller)
           if (index > -1) {
             chillerMap.get(chiller)!.push(chillerKws[index])
@@ -305,7 +324,7 @@ export const useSettingsStore = defineStore('settings', () => {
           }
         })
       } else {
-        ([1, 2, 3]).forEach((chiller: number) => {
+        ;[1, 2, 3].forEach((chiller: number) => {
           chillerMap.get(chiller)!.push(null)
         })
       }
@@ -349,17 +368,21 @@ export const useSettingsStore = defineStore('settings', () => {
       ['水泵_B2', CDWP5],
     ])
 
-    for (let time = dayjs(startTime, 'YYYY-MM-DD'); dayjs(time).isBefore(dayjs(endTime, 'YYYY-MM-DD HH:mm:ss')); time = time.add(15, 'minute')) {
+    for (
+      let time = dayjs(startTime, 'YYYY-MM-DD');
+      dayjs(time).isBefore(dayjs(endTime, 'YYYY-MM-DD HH:mm:ss'));
+      time = time.add(15, 'minute')
+    ) {
       timestamp.push(time.format('YYYY-MM-DD HH:mm:ss'))
       const recordTime = time.format('M/D/YYYY H:mm')
 
       if (recordMap.value.has(recordTime)) {
         const record = recordMap.value.get(recordTime)
 
-        const cdwpAs = JSON.parse(record['水泵_A']);
+        const cdwpAs = JSON.parse(record['水泵_A'])
         const recordAKw = record['水泵能耗_A(kW)'].replace(/'/g, '')
-        const cdwpAKws = JSON.parse(recordAKw);
-        ([1, 2, 3]).forEach((chiller: number) => {
+        const cdwpAKws = JSON.parse(recordAKw)
+        ;[1, 2, 3].forEach((chiller: number) => {
           const index = cdwpAs.indexOf(chiller)
           if (index > -1) {
             cdwpMap.get(`水泵_A${chiller}`)!.push(cdwpAKws[index])
@@ -368,10 +391,10 @@ export const useSettingsStore = defineStore('settings', () => {
           }
         })
 
-        const cdwpBs = JSON.parse(record['水泵_B']);
+        const cdwpBs = JSON.parse(record['水泵_B'])
         const recordBKw = record['水泵能耗_B(kW)'].replace(/'/g, '')
-        const cdwpBKws = JSON.parse(recordBKw);
-        ([1, 2]).forEach((chiller: number) => {
+        const cdwpBKws = JSON.parse(recordBKw)
+        ;[1, 2].forEach((chiller: number) => {
           const index = cdwpBs.indexOf(chiller)
           if (index > -1) {
             cdwpMap.get(`水泵_B${chiller}`)!.push(cdwpBKws[index])
@@ -380,10 +403,10 @@ export const useSettingsStore = defineStore('settings', () => {
           }
         })
       } else {
-        ([1, 2, 3]).forEach((chiller: number) => {
+        ;[1, 2, 3].forEach((chiller: number) => {
           cdwpMap.get(`水泵_A${chiller}`)!.push(null)
-        });
-        ([1, 2]).forEach((chiller: number) => {
+        })
+        ;[1, 2].forEach((chiller: number) => {
           cdwpMap.get(`水泵_B${chiller}`)!.push(null)
         })
       }
@@ -419,7 +442,7 @@ export const useSettingsStore = defineStore('settings', () => {
         y: CDWP5,
         name: 'CDWP5 - Power - Chiller Plant Power Log_CDWP 5kW, PowerMeter (kW)',
         type: 'bar',
-      }
+      },
     ]
   }
   // 冷却塔能耗_A(kW)+冷却塔能耗_B(kW) 冷却塔_A+冷却塔_B[1,2][1] -> [CT1, CT2, CT4]
@@ -435,17 +458,21 @@ export const useSettingsStore = defineStore('settings', () => {
       ['冷却塔_B1', CT4],
     ])
 
-    for (let time = dayjs(startTime, 'YYYY-MM-DD'); dayjs(time).isBefore(dayjs(endTime, 'YYYY-MM-DD HH:mm:ss')); time = time.add(15, 'minute')) {
+    for (
+      let time = dayjs(startTime, 'YYYY-MM-DD');
+      dayjs(time).isBefore(dayjs(endTime, 'YYYY-MM-DD HH:mm:ss'));
+      time = time.add(15, 'minute')
+    ) {
       timestamp.push(time.format('YYYY-MM-DD HH:mm:ss'))
       const recordTime = time.format('M/D/YYYY H:mm')
 
       if (recordMap.value.has(recordTime)) {
         const record = recordMap.value.get(recordTime)
 
-        const ctAs = JSON.parse(record['冷却塔_A']);
+        const ctAs = JSON.parse(record['冷却塔_A'])
         const recordAKw = record['冷却塔能耗_A(kW)'].replace(/'/g, '')
-        const ctAKws = JSON.parse(recordAKw);
-        ([1, 2]).forEach((chiller: number) => {
+        const ctAKws = JSON.parse(recordAKw)
+        ;[1, 2].forEach((chiller: number) => {
           const index = ctAs.indexOf(chiller)
           if (index > -1) {
             ctMap.get(`冷却塔_A${chiller}`)!.push(ctAKws[index])
@@ -454,10 +481,10 @@ export const useSettingsStore = defineStore('settings', () => {
           }
         })
 
-        const ctBs = JSON.parse(record['冷却塔_B']);
+        const ctBs = JSON.parse(record['冷却塔_B'])
         const recordBKw = record['冷却塔能耗_B(kW)'].replace(/'/g, '')
-        const ctBKws = JSON.parse(recordBKw);
-        ([1]).forEach((chiller: number) => {
+        const ctBKws = JSON.parse(recordBKw)
+        ;[1].forEach((chiller: number) => {
           const index = ctBs.indexOf(chiller)
           if (index > -1) {
             ctMap.get(`冷却塔_B${chiller}`)!.push(ctBKws[index])
@@ -466,10 +493,10 @@ export const useSettingsStore = defineStore('settings', () => {
           }
         })
       } else {
-        ([1, 2]).forEach((chiller: number) => {
+        ;[1, 2].forEach((chiller: number) => {
           ctMap.get(`冷却塔_A${chiller}`)!.push(null)
-        });
-        ([1]).forEach((chiller: number) => {
+        })
+        ;[1].forEach((chiller: number) => {
           ctMap.get(`冷却塔_B${chiller}`)!.push(null)
         })
       }
@@ -493,7 +520,7 @@ export const useSettingsStore = defineStore('settings', () => {
         y: CT4,
         name: 'CT4 - Power - Chiller Plant Power Log_CT 4kW, PowerMeter (kW)',
         type: 'bar',
-      }
+      },
     ]
   }
   const dataMap = new Map<string, ([startTime, endTime]: string[]) => object>([
@@ -519,6 +546,6 @@ export const useSettingsStore = defineStore('settings', () => {
     datetimerange,
     heads,
     // filterChillerData,
-    getMegaData
+    getMegaData,
   }
 })
