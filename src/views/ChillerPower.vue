@@ -53,6 +53,7 @@ const chartData1 = ref<ChartDataRow[]>([])
 const layout1 = {
   title: 'Chiller Power (Carnot)',
   barmode: 'stack',
+  height: 300, // 设置图表高度
   yaxis: {
     tickformat: 'd', // 设置刻度格式为整数
     dtick: 100, // 设置刻度间隔
@@ -71,6 +72,7 @@ const chartData2 = ref<ChartDataRow[]>([])
 const layout2 = {
   title: 'Chiller Power (Mega)',
   barmode: 'stack',
+  height: 300, // 设置图表高度
   yaxis: {
     tickformat: 'd', // 设置刻度格式为整数
     dtick: 100, // 设置刻度间隔

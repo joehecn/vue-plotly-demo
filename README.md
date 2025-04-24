@@ -2,6 +2,10 @@
 
 This template should help get you started developing with Vue 3 in Vite.
 
+## TODO
+- [ ] 多个图表在一个页面的时候，页面大小改变，图表自动调整大小问题
+- [ ] 实际的 cooling load 与预测的 cooling load 的对比图
+
 ## Demo
 [vue-plotly-demo](https://joehecn.github.io/vue-plotly-demo/)
 

@@ -53,6 +53,7 @@ const chartData1 = ref<ChartDataRow[]>([])
 const layout1 = {
   title: 'Cooling Tower Running Status (Carnot)',
   barmode: 'stack',
+  height: 300, // 设置图表高度
   yaxis: {
     tickformat: 'd', // 设置刻度格式为整数
     dtick: 1, // 设置刻度间隔为 1
@@ -70,6 +71,7 @@ const chartData2 = ref<ChartDataRow[]>([])
 const layout2 = {
   title: 'Cooling Tower Running Status (Mega)',
   barmode: 'stack',
+  height: 300, // 设置图表高度
   yaxis: {
     tickformat: 'd', // 设置刻度格式为整数
     dtick: 1, // 设置刻度间隔为 1

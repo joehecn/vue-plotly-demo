@@ -53,6 +53,8 @@ const chartData1 = ref<ChartDataRow[]>([])
 const layout1 = {
   title: 'Chiller Running Status (Carnot)',
   barmode: 'stack',
+  height: 300, // 设置图表高度
+  responsive: true, // 启用自适应
   yaxis: {
     type: 'category', // 将 y 轴设置为分类轴
     categoryorder: 'array', // 按自定义顺序排序
@@ -71,6 +73,8 @@ const chartData2 = ref<ChartDataRow[]>([])
 const layout2 = {
   title: 'Chiller Running Status (Mega)',
   barmode: 'stack',
+  height: 300, // 设置图表高度
+  responsive: true, // 启用自适应
   yaxis: {
     type: 'category', // 将 y 轴设置为分类轴
     categoryorder: 'array', // 按自定义顺序排序
@@ -126,20 +130,12 @@ onMounted(async () => {
 <template>
   <h1>Status - Chiller</h1>
 
-  <el-date-picker
-    v-model="datetimerange"
-    value-format="YYYY-MM-DD"
-    type="daterange"
-    range-separator="To"
-    start-placeholder="Start date"
-    end-placeholder="End date"
-    :shortcuts="shortcuts"
-    @change="onDatetimerangeChange"
-  />
+  <el-date-picker v-model="datetimerange" value-format="YYYY-MM-DD" type="daterange" range-separator="To"
+    start-placeholder="Start date" end-placeholder="End date" :shortcuts="shortcuts" @change="onDatetimerangeChange" />
 
   <div v-loading="loading1">
     <VuePlotly :data="chartData1" :layout="layout1" :display-mode-bar="false"></VuePlotly>
-  </div>
 
-  <VuePlotly :data="chartData2" :layout="layout2" :display-mode-bar="false"></VuePlotly>
+    <VuePlotly :data="chartData2" :layout="layout2" :display-mode-bar="false"></VuePlotly>
+  </div>
 </template>
