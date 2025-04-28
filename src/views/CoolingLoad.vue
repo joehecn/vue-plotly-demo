@@ -1,7 +1,6 @@
 <script setup lang="ts">
 import { onMounted, ref } from 'vue'
 import { VuePlotly } from 'vue3-plotly'
-import { fetchCarnotData } from '@/api/carnot'
 import dayjs from 'dayjs'
 import { useSettingsStore } from '@/stores/settings.store'
 import type { ChartDataRow } from '@/stores/settings.store'
@@ -48,71 +47,44 @@ const shortcuts = [
   },
 ]
 
-const loading1 = ref(true)
-const chartData1 = ref<ChartDataRow[]>([])
-const layout1 = {
-  title: 'Cooling Tower Running Status (Carnot)',
-  barmode: 'stack',
-  height: 300, // 设置图表高度
+const chartData = ref<ChartDataRow[]>([])
+const layout = {
+  title: 'Cooling Load Difference',
+  // barmode: 'stack',
+  height: 600, // 设置图表高度
   responsive: true, // 启用自适应
   yaxis: {
     tickformat: 'd', // 设置刻度格式为整数
-    dtick: 1, // 设置刻度间隔为 1
-    range: [0, 3], // 设置 y 轴范围
+    dtick: 200, // 设置刻度间隔
+    // range: [0, 2000], // 设置 y 轴范围
   },
   legend: {
     x: 0, // 图例的水平位置 (0 表示左对齐，1 表示右对齐)
-    y: -0.24, // 图例的垂直位置 (0 表示底部，1 表示顶部)
+    y: -0.1, // 图例的垂直位置 (0 表示底部，1 表示顶部)
     xanchor: 'left', // 水平对齐方式 ('left', 'center', 'right')
     yanchor: 'top', // 垂直对齐方式 ('top', 'middle', 'bottom')
     orientation: 'h', // 图例方向 ('v' 表示垂直, 'h' 表示水平)
   },
 }
 
-const chartData2 = ref<ChartDataRow[]>([])
-const layout2 = {
-  title: 'Cooling Tower Running Status (Mega)',
-  barmode: 'stack',
-  height: 300, // 设置图表高度
-  responsive: true, // 启用自适应
-  yaxis: {
-    tickformat: 'd', // 设置刻度格式为整数
-    dtick: 1, // 设置刻度间隔为 1
-    range: [0, 3], // 设置 y 轴范围
-  },
-  legend: {
-    x: 0, // 图例的水平位置 (0 表示左对齐，1 表示右对齐)
-    y: -0.24, // 图例的垂直位置 (0 表示底部，1 表示顶部)
-    xanchor: 'left', // 水平对齐方式 ('left', 'center', 'right')
-    yanchor: 'top', // 垂直对齐方式 ('top', 'middle', 'bottom')
-    orientation: 'h', // 图例方向 ('v' 表示垂直, 'h' 表示水平)
-  },
-}
-
-const refreshData = async () => {
-  loading1.value = true
+const refreshData = () => {
   try {
     const [startTime, endTime] = datetimerange.value
     const _endTime = `${endTime} 23:59:59`
 
-    const dataCarnot = await fetchCarnotData('coolingTowerRunningStatus', [startTime, _endTime])
-    chartData1.value = dataCarnot as ChartDataRow[]
-
-    const dataMega = settingsStore.getMegaData('coolingTowerRunningStatus', [startTime, _endTime])
-    chartData2.value = dataMega as ChartDataRow[]
+    const dataMega = settingsStore.getMegaData('coolingLoadDiff', [startTime, _endTime])
+    chartData.value = dataMega as ChartDataRow[]
   } catch (error) {
-    console.error('Error fetching data:', error)
-  } finally {
-    loading1.value = false
+    console.error('Error in refreshData:', error)
   }
 }
 
-const onDatetimerangeChange = async (value: string[]) => {
+const onDatetimerangeChange = (value: string[]) => {
   if (!value) return
-  await refreshData()
+  refreshData()
 }
 
-onMounted(async () => {
+onMounted(() => {
   const now = new Date()
 
   if (settingsStore.datetimerange.length > 0) {
@@ -123,19 +95,15 @@ onMounted(async () => {
       dayjs(now).startOf('D').format('YYYY-MM-DD'),
     ]
   }
-  await refreshData()
+
+  refreshData()
 })
 </script>
 
 <template>
-  <h1>Status - Cooling Tower</h1>
-
+  <h1>Diff - Cooling Load</h1>
   <el-date-picker v-model="datetimerange" value-format="YYYY-MM-DD" type="daterange" range-separator="To"
     start-placeholder="Start date" end-placeholder="End date" :shortcuts="shortcuts" @change="onDatetimerangeChange" />
 
-  <div v-loading="loading1">
-    <VuePlotly :data="chartData1" :layout="layout1" :display-mode-bar="false"></VuePlotly>
-  </div>
-
-  <VuePlotly :data="chartData2" :layout="layout2" :display-mode-bar="false"></VuePlotly>
+  <VuePlotly :data="chartData" :layout="layout" :display-mode-bar="false"></VuePlotly>
 </template>

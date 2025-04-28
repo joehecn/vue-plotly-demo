@@ -5,35 +5,37 @@ import { UploadFilled } from '@element-plus/icons-vue'
 import { parse } from 'csv-parse/browser/esm'
 
 import { useSettingsStore } from '@/stores/settings.store'
-import { ElNotification } from 'element-plus'
+// import { ElNotification } from 'element-plus'
 
 import type { UploadInstance, UploadProps, UploadRawFile } from 'element-plus'
 import type { SafeAny } from '@/api/carnot'
 
-const isEqualHeads = (heads: string[]) => {
-  const headTemplate = [
-    '时间戳',
-    '冷量需求(kW)',
-    '运行机组',
-    '负载率(%)',
-    '供水温度(°C)',
-    '机组能耗(kW)',
-    'COP',
-    '水泵_A',
-    '冷却塔_A',
-    '水泵能耗_A(kW)',
-    '冷却塔能耗_A(kW)',
-    '水泵_B',
-    '冷却塔_B',
-    '水泵频频率',
-    '冷却塔转速',
-    '水泵能耗_B(kW)',
-    '冷却塔能耗_B(kW)',
-  ]
-  if (heads.length !== headTemplate.length) return false
-  if (heads.some((head) => !headTemplate.includes(head))) return false
-  return true
-}
+// const isEqualHeads = (heads: string[]) => {
+//   const headTemplate = [
+//     '时间戳',
+//     '冷量需求(kW)',
+//     '运行机组',
+//     '负载率(%)',
+//     '供水温度(°C)',
+//     '机组能耗(kW)',
+//     'COP',
+//     '水泵_A',
+//     '冷却塔_A',
+//     '水泵能耗_A(kW)',
+//     '冷却塔能耗_A(kW)',
+//     '水泵_B',
+//     '冷却塔_B',
+//     '水泵频频率',
+//     '冷却塔转速',
+//     '水泵能耗_B(kW)',
+//     '冷却塔能耗_B(kW)',
+//     '冷量预测(kW)',
+//   ]
+//   // if (heads.length !== headTemplate.length) return false
+//   // if (heads.some((head) => !headTemplate.includes(head))) return false
+//   // if (headTemplate.some((head) => !heads.includes(head))) return false
+//   return true
+// }
 
 const settingsStore = useSettingsStore()
 const token = ref('')
@@ -52,7 +54,7 @@ const generateColumns = (heads: string[]) =>
     key: head,
     dataKey: head,
     title: head,
-    width: 150,
+    width: 180,
   }))
 
 const generateData = (records: SafeAny[], prefix = 'row-') =>
@@ -99,15 +101,15 @@ const handleChange: UploadProps['onChange'] = (file) => {
           columns.value = generateColumns(heads)
           data.value = generateData(records)
 
-          // 保存
-          if (!isEqualHeads(heads)) {
-            ElNotification({
-              title: 'Error',
-              message: '文件表头检测不通过',
-              type: 'error',
-            })
-            return
-          }
+          // // 保存
+          // if (!isEqualHeads(heads)) {
+          //   ElNotification({
+          //     title: 'Error',
+          //     message: '文件表头检测不通过',
+          //     type: 'error',
+          //   })
+          //   return
+          // }
 
           settingsStore.setCsv(content)
         },
@@ -137,15 +139,8 @@ onMounted(() => {
   <h2>Carnot Bearer Token</h2>
   <el-input v-model="token" @change="setToken"></el-input>
   <h2>上传 CSV 文件</h2>
-  <el-upload
-    ref="upload"
-    drag
-    accept="text/csv"
-    :auto-upload="false"
-    :limit="1"
-    :on-exceed="handleExceed"
-    :on-change="handleChange"
-  >
+  <el-upload ref="upload" drag accept="text/csv" :auto-upload="false" :limit="1" :on-exceed="handleExceed"
+    :on-change="handleChange">
     <el-icon class="el-icon--upload"><upload-filled /></el-icon>
     <div class="el-upload__text">Drop .csv file here or <em>click to upload</em></div>
     <template #tip>

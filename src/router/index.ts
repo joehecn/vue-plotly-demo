@@ -47,6 +47,11 @@ const router = createRouter({
       name: 'ct-power',
       component: () => import('../views/CtPower.vue'),
     },
+    {
+      path: '/cooling-load',
+      name: 'cooling-load',
+      component: () => import('../views/CoolingLoad.vue'),
+    }
   ],
 })
 

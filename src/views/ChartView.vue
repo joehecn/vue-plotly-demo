@@ -74,6 +74,7 @@ const layout1 = ref({
   title: '',
   barmode: 'stack',
   height: 300, // 设置图表高度
+  responsive: true, // 启用自适应
   yaxis: {
     tickformat: 'd', // 设置刻度格式为整数
     dtick: 1, // 设置刻度间隔为 1
@@ -136,16 +137,8 @@ onMounted(async () => {
 <template>
   <h1>{{ title }}</h1>
 
-  <el-date-picker
-    v-model="datetimerange"
-    value-format="YYYY-MM-DD"
-    type="daterange"
-    range-separator="To"
-    start-placeholder="Start date"
-    end-placeholder="End date"
-    :shortcuts="shortcuts"
-    @change="onDatetimerangeChange"
-  />
+  <el-date-picker v-model="datetimerange" value-format="YYYY-MM-DD" type="daterange" range-separator="To"
+    start-placeholder="Start date" end-placeholder="End date" :shortcuts="shortcuts" @change="onDatetimerangeChange" />
 
   <div v-loading="loading1">
     <VuePlotly :data="chartData1" :layout="layout1" :display-mode-bar="false"> </VuePlotly>

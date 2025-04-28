@@ -53,14 +53,16 @@ const chartData1 = ref<ChartDataRow[]>([])
 const layout1 = {
   title: 'Chiller Power (Carnot)',
   barmode: 'stack',
-  height: 300, // 设置图表高度
+  height: 400, // 设置图表高度
+  responsive: true, // 启用自适应
   yaxis: {
     tickformat: 'd', // 设置刻度格式为整数
     dtick: 100, // 设置刻度间隔
+    range: [0, 500], // 设置 y 轴范围
   },
   legend: {
     x: 0, // 图例的水平位置 (0 表示左对齐，1 表示右对齐)
-    y: -0.15, // 图例的垂直位置 (0 表示底部，1 表示顶部)
+    y: -0.24, // 图例的垂直位置 (0 表示底部，1 表示顶部)
     xanchor: 'left', // 水平对齐方式 ('left', 'center', 'right')
     yanchor: 'top', // 垂直对齐方式 ('top', 'middle', 'bottom')
     orientation: 'h', // 图例方向 ('v' 表示垂直, 'h' 表示水平)
@@ -72,14 +74,16 @@ const chartData2 = ref<ChartDataRow[]>([])
 const layout2 = {
   title: 'Chiller Power (Mega)',
   barmode: 'stack',
-  height: 300, // 设置图表高度
+  height: 400, // 设置图表高度
+  responsive: true, // 启用自适应
   yaxis: {
     tickformat: 'd', // 设置刻度格式为整数
     dtick: 100, // 设置刻度间隔
+    range: [0, 500], // 设置 y 轴范围
   },
   legend: {
     x: 0, // 图例的水平位置 (0 表示左对齐，1 表示右对齐)
-    y: -0.15, // 图例的垂直位置 (0 表示底部，1 表示顶部)
+    y: -0.24, // 图例的垂直位置 (0 表示底部，1 表示顶部)
     xanchor: 'left', // 水平对齐方式 ('left', 'center', 'right')
     yanchor: 'top', // 垂直对齐方式 ('top', 'middle', 'bottom')
     orientation: 'h', // 图例方向 ('v' 表示垂直, 'h' 表示水平)
@@ -128,16 +132,8 @@ onMounted(async () => {
 <template>
   <h1>Power - Chiller</h1>
 
-  <el-date-picker
-    v-model="datetimerange"
-    value-format="YYYY-MM-DD"
-    type="daterange"
-    range-separator="To"
-    start-placeholder="Start date"
-    end-placeholder="End date"
-    :shortcuts="shortcuts"
-    @change="onDatetimerangeChange"
-  />
+  <el-date-picker v-model="datetimerange" value-format="YYYY-MM-DD" type="daterange" range-separator="To"
+    start-placeholder="Start date" end-placeholder="End date" :shortcuts="shortcuts" @change="onDatetimerangeChange" />
 
   <div v-loading="loading1">
     <VuePlotly :data="chartData1" :layout="layout1" :display-mode-bar="false"></VuePlotly>

@@ -55,7 +55,11 @@ export const useSettingsStore = defineStore('settings', () => {
   const recordMap = computed(() => {
     const map = new Map<string, SafeAny>()
     records.value.forEach((record: SafeAny) => {
-      const recordTime = record['时间戳'] // 3/5/2025 16:00
+      let recordTime = record['时间戳'] // 3/5/2025 16:00
+      if (recordTime.length === 19) {
+        recordTime = dayjs(recordTime, 'YYYY-MM-DD HH:mm').format('M/D/YYYY H:mm')
+      }
+
       map.set(recordTime, record)
     })
     return map
@@ -65,6 +69,14 @@ export const useSettingsStore = defineStore('settings', () => {
     if (records.value.length === 0) return []
     const startTime = records.value[0]['时间戳']
     const endTime = records.value[records.value.length - 1]['时间戳']
+
+    if (startTime.length === 19) {
+      return [
+        dayjs(startTime, 'YYYY-MM-DD HH:mm').format('YYYY-MM-DD'),
+        dayjs(endTime, 'YYYY-MM-DD HH:mm').format('YYYY-MM-DD'),
+      ]
+    }
+
     return [
       dayjs(startTime, 'M/D/YYYY H:mm').format('YYYY-MM-DD'),
       dayjs(endTime, 'M/D/YYYY H:mm').format('YYYY-MM-DD'),
@@ -100,7 +112,8 @@ export const useSettingsStore = defineStore('settings', () => {
       if (recordMap.value.has(recordTime)) {
         const record = recordMap.value.get(recordTime)
 
-        const chillers = JSON.parse(record['运行机组'])
+        console.log(record['运行机组'])
+        const chillers = JSON.parse(record['运行机组'] || '[]')
           ;[1, 2, 3].forEach((chiller: number) => {
             if (chillers.includes(chiller)) {
               chillerMap.get(chiller)!.push(true)
@@ -164,7 +177,7 @@ export const useSettingsStore = defineStore('settings', () => {
       if (recordMap.value.has(recordTime)) {
         const record = recordMap.value.get(recordTime)
 
-        const cdwpAs = JSON.parse(record['水泵_A'])
+        const cdwpAs = JSON.parse(record['水泵_A'] || '[]')
           ;[1, 2, 3].forEach((chiller: number) => {
             if (cdwpAs.includes(chiller)) {
               cdwpMap.get(`水泵_A${chiller}`)!.push(1.0)
@@ -173,7 +186,7 @@ export const useSettingsStore = defineStore('settings', () => {
             }
           })
 
-        const cdwpBs = JSON.parse(record['水泵_B'])
+        const cdwpBs = JSON.parse(record['水泵_B'] || '[]')
           ;[1, 2].forEach((chiller: number) => {
             if (cdwpBs.includes(chiller)) {
               cdwpMap.get(`水泵_B${chiller}`)!.push(1.0)
@@ -248,7 +261,7 @@ export const useSettingsStore = defineStore('settings', () => {
       if (recordMap.value.has(recordTime)) {
         const record = recordMap.value.get(recordTime)
 
-        const ctAs = JSON.parse(record['冷却塔_A'])
+        const ctAs = JSON.parse(record['冷却塔_A'] || '[]')
           ;[1, 2].forEach((chiller: number) => {
             if (ctAs.includes(chiller)) {
               ctMap.get(`冷却塔_A${chiller}`)!.push(1.0)
@@ -257,7 +270,7 @@ export const useSettingsStore = defineStore('settings', () => {
             }
           })
 
-        const ctBs = JSON.parse(record['冷却塔_B'])
+        const ctBs = JSON.parse(record['冷却塔_B'] || '[]')
           ;[1].forEach((chiller: number) => {
             if (ctBs.includes(chiller)) {
               ctMap.get(`冷却塔_B${chiller}`)!.push(1.0)
@@ -320,9 +333,9 @@ export const useSettingsStore = defineStore('settings', () => {
       if (recordMap.value.has(recordTime)) {
         const record = recordMap.value.get(recordTime)
 
-        const chillers = JSON.parse(record['运行机组'])
+        const chillers = JSON.parse(record['运行机组'] || '[]')
         const recordKw = record['机组能耗(kW)'].replace(/'/g, '')
-        const chillerKws = JSON.parse(recordKw)
+        const chillerKws = JSON.parse(recordKw || '[]')
           ;[1, 2, 3].forEach((chiller: number) => {
             const index = chillers.indexOf(chiller)
             if (index > -1) {
@@ -387,9 +400,9 @@ export const useSettingsStore = defineStore('settings', () => {
       if (recordMap.value.has(recordTime)) {
         const record = recordMap.value.get(recordTime)
 
-        const cdwpAs = JSON.parse(record['水泵_A'])
+        const cdwpAs = JSON.parse(record['水泵_A'] || '[]')
         const recordAKw = record['水泵能耗_A(kW)'].replace(/'/g, '')
-        const cdwpAKws = JSON.parse(recordAKw)
+        const cdwpAKws = JSON.parse(recordAKw || '[]')
           ;[1, 2, 3].forEach((chiller: number) => {
             const index = cdwpAs.indexOf(chiller)
             if (index > -1) {
@@ -399,9 +412,9 @@ export const useSettingsStore = defineStore('settings', () => {
             }
           })
 
-        const cdwpBs = JSON.parse(record['水泵_B'])
+        const cdwpBs = JSON.parse(record['水泵_B'] || '[]')
         const recordBKw = record['水泵能耗_B(kW)'].replace(/'/g, '')
-        const cdwpBKws = JSON.parse(recordBKw)
+        const cdwpBKws = JSON.parse(recordBKw || '[]')
           ;[1, 2].forEach((chiller: number) => {
             const index = cdwpBs.indexOf(chiller)
             if (index > -1) {
@@ -477,9 +490,9 @@ export const useSettingsStore = defineStore('settings', () => {
       if (recordMap.value.has(recordTime)) {
         const record = recordMap.value.get(recordTime)
 
-        const ctAs = JSON.parse(record['冷却塔_A'])
+        const ctAs = JSON.parse(record['冷却塔_A'] || '[]')
         const recordAKw = record['冷却塔能耗_A(kW)'].replace(/'/g, '')
-        const ctAKws = JSON.parse(recordAKw)
+        const ctAKws = JSON.parse(recordAKw || '[]')
           ;[1, 2].forEach((chiller: number) => {
             const index = ctAs.indexOf(chiller)
             if (index > -1) {
@@ -489,9 +502,9 @@ export const useSettingsStore = defineStore('settings', () => {
             }
           })
 
-        const ctBs = JSON.parse(record['冷却塔_B'])
+        const ctBs = JSON.parse(record['冷却塔_B'] || '[]')
         const recordBKw = record['冷却塔能耗_B(kW)'].replace(/'/g, '')
-        const ctBKws = JSON.parse(recordBKw)
+        const ctBKws = JSON.parse(recordBKw || '[]')
           ;[1].forEach((chiller: number) => {
             const index = ctBs.indexOf(chiller)
             if (index > -1) {
@@ -531,6 +544,55 @@ export const useSettingsStore = defineStore('settings', () => {
       },
     ]
   }
+  const filterCoolingLoadDiffData = ([startTime, endTime]: string[]) => {
+    const coolingLoadReal: (number | null)[] = []
+    const coolingLoadPredict: (number | null)[] = []
+    const timestamp: string[] = []
+
+    const coolingMap = new Map<string, (number | null)[]>([
+      ['冷量需求(kW)', coolingLoadReal],
+      ['冷量预测(kW)', coolingLoadPredict],
+    ])
+
+    for (
+      let time = dayjs(startTime, 'YYYY-MM-DD');
+      dayjs(time).isBefore(dayjs(endTime, 'YYYY-MM-DD HH:mm:ss'));
+      time = time.add(15, 'minute')
+    ) {
+      timestamp.push(time.format('YYYY-MM-DD HH:mm:ss'))
+      const recordTime = time.format('M/D/YYYY H:mm')
+
+      if (recordMap.value.has(recordTime)) {
+        const record = recordMap.value.get(recordTime)
+        // console.log(record['冷量预测(kW)'])
+
+        coolingMap.get('冷量需求(kW)')!.push(Number(record['冷量需求(kW)']))
+        coolingMap.get('冷量预测(kW)')!.push(record['冷量预测(kW)'] ? Number(record['冷量预测(kW)']) : null)
+      } else {
+        coolingMap.get('冷量需求(kW)')!.push(null)
+        coolingMap.get('冷量预测(kW)')!.push(null)
+      }
+    }
+    // console.log({ coolingLoadReal, coolingLoadPredict })
+    return [
+      {
+        x: timestamp,
+        y: coolingLoadReal,
+        name: '冷量需求(kW)',
+        type: 'scatter',
+        // mode: 'lines+markers', // 显示折线和点
+        mode: 'lines', // 显示折线
+      },
+      {
+        x: timestamp,
+        y: coolingLoadPredict,
+        name: '冷量预测(kW)',
+        type: 'scatter',
+        // mode: 'lines+markers', // 显示折线和点
+        mode: 'lines', // 显示折线
+      },
+    ]
+  }
   const dataMap = new Map<string, ([startTime, endTime]: string[]) => object>([
     ['chillerRunningStatus', filterChillerData],
     ['cdwpRunningStatus', filterCdwpData],
@@ -538,6 +600,7 @@ export const useSettingsStore = defineStore('settings', () => {
     ['chillerPower', filterChillerPowerData],
     ['cdwpPower', filterCdwpPowerData],
     ['ctPower', filterCtPowerData],
+    ['coolingLoadDiff', filterCoolingLoadDiffData],
   ])
 
   const getMegaData = (method: string, [startTime, endTime]: string[]) => {

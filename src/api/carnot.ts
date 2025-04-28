@@ -427,6 +427,7 @@ export const fetchCarnotData = async (method: string, [startTime, endTime]: stri
 
     return dataMap.get(method)?.(data) ?? []
   } catch (error: SafeAny) {
+    console.error(error)
     ElNotification({
       title: 'Error',
       message: error.message,

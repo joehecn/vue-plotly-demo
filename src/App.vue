@@ -40,37 +40,54 @@ watch(route, (to) => {
           </el-icon>
           <template #title>Settings</template>
         </el-menu-item>
+
         <el-menu-item index="chiller" route="/chiller">
           <el-icon>
             <money />
           </el-icon>
-          <template #title>Status - Chiller</template></el-menu-item>
+          <template #title>Status - Chiller</template>
+        </el-menu-item>
+
         <el-menu-item index="cdwp" route="/cdwp">
           <el-icon>
             <goblet />
           </el-icon>
-          <template #title>Status - CDWP</template></el-menu-item>
+          <template #title>Status - CDWP</template>
+        </el-menu-item>
+
         <el-menu-item index="cooling-tower" route="/cooling-tower">
           <el-icon>
             <van />
           </el-icon>
           <template #title>Status - Cooling Tower</template>
         </el-menu-item>
+
         <el-menu-item index="chiller-power" route="/chiller-power">
           <el-icon>
             <mic />
           </el-icon>
           <template #title>Power - Chiller</template>
         </el-menu-item>
+
         <el-menu-item index="cdwp-power" route="/cdwp-power">
           <el-icon>
             <memo />
-          </el-icon><template #title>Power - CDWP</template></el-menu-item>
+          </el-icon>
+          <template #title>Power - CDWP</template>
+        </el-menu-item>
+
         <el-menu-item index="ct-power" route="/ct-power">
           <el-icon>
             <files />
           </el-icon>
           <template #title>Power - Cooling Tower</template>
+        </el-menu-item>
+
+        <el-menu-item index="cooling-load" route="/cooling-load">
+          <el-icon>
+            <CopyDocument />
+          </el-icon>
+          <template #title>Cooling Load</template>
         </el-menu-item>
       </el-menu>
       <!-- </el-affix> -->

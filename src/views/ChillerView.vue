@@ -59,10 +59,11 @@ const layout1 = {
     type: 'category', // 将 y 轴设置为分类轴
     categoryorder: 'array', // 按自定义顺序排序
     categoryarray: [false, true], // 指定分类顺序
+    range: [0, 3], // 设置 y 轴范围
   },
   legend: {
     x: 0, // 图例的水平位置 (0 表示左对齐，1 表示右对齐)
-    y: -0.15, // 图例的垂直位置 (0 表示底部，1 表示顶部)
+    y: -0.24, // 图例的垂直位置 (0 表示底部，1 表示顶部)
     xanchor: 'left', // 水平对齐方式 ('left', 'center', 'right')
     yanchor: 'top', // 垂直对齐方式 ('top', 'middle', 'bottom')
     orientation: 'h', // 图例方向 ('v' 表示垂直, 'h' 表示水平)
@@ -79,10 +80,11 @@ const layout2 = {
     type: 'category', // 将 y 轴设置为分类轴
     categoryorder: 'array', // 按自定义顺序排序
     categoryarray: [false, true], // 指定分类顺序
+    range: [0, 3], // 设置 y 轴范围
   },
   legend: {
     x: 0, // 图例的水平位置 (0 表示左对齐，1 表示右对齐)
-    y: -0.15, // 图例的垂直位置 (0 表示底部，1 表示顶部)
+    y: -0.24, // 图例的垂直位置 (0 表示底部，1 表示顶部)
     xanchor: 'left', // 水平对齐方式 ('left', 'center', 'right')
     yanchor: 'top', // 垂直对齐方式 ('top', 'middle', 'bottom')
     orientation: 'h', // 图例方向 ('v' 表示垂直, 'h' 表示水平)
