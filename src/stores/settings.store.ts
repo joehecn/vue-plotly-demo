@@ -7,7 +7,7 @@ import type { SafeAny } from '@/api/carnot'
 
 export type ChartDataRow = {
   x: string[]
-  y: boolean[]
+  y: (boolean | number)[]
   name: string
   type: string
 }

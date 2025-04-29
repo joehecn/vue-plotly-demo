@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { onMounted, ref } from 'vue'
+import { computed, onMounted, ref } from 'vue'
 import { VuePlotly } from 'vue3-plotly'
 import { fetchCarnotData } from '@/api/carnot'
 import dayjs from 'dayjs'
@@ -50,6 +50,20 @@ const shortcuts = [
 
 const loading1 = ref(true)
 const chartData1 = ref<ChartDataRow[]>([])
+const totalPower1 = computed(() => {
+  return chartData1.value.reduce((acc, item) => {
+    const powers = item.y as number[]
+    const total = powers.reduce((sum, power) => {
+      return sum + (isNaN(power) ? 0 : power)
+    }, 0)
+
+    return acc + (isNaN(total) ? 0 : total)
+  }, 0)
+
+  // return total
+  //   ? `Carnot's Total Power: ${total.toFixed(0)}`
+  //   : `Carnot's Total Power: No data`
+})
 const layout1 = {
   title: 'Chiller Power (Carnot)',
   barmode: 'stack',
@@ -68,9 +82,35 @@ const layout1 = {
     orientation: 'h', // 图例方向 ('v' 表示垂直, 'h' 表示水平)
     // traceorder: 'reversed', // 图例顺序反转
   },
+  // annotations: [
+  //   {
+  //     text: 'Total Power: 1234',
+  //     x: 20,
+  //     y: 500, // 注释的 y 坐标
+  //     showarrow: false,
+  //     font: {
+  //       size: 16,
+  //       color: '#000',
+  //     },
+  //   },
+  // ],
 }
 
 const chartData2 = ref<ChartDataRow[]>([])
+const totalPower2 = computed(() => {
+  return chartData2.value.reduce((acc, item) => {
+    const powers = item.y as number[]
+    const total = powers.reduce((sum, power) => {
+      return sum + (isNaN(power) ? 0 : power)
+    }, 0)
+
+    return acc + (isNaN(total) ? 0 : total)
+  }, 0)
+
+  // return total
+  //   ? `Mega's Total Power: ${total.toFixed(0)}`
+  //   : `Mega's Total Power: No data`
+})
 const layout2 = {
   title: 'Chiller Power (Mega)',
   barmode: 'stack',
@@ -98,9 +138,11 @@ const refreshData = async () => {
     const _endTime = `${endTime} 23:59:59`
 
     const dataCarnot = await fetchCarnotData('chillerPower', [startTime, _endTime])
+    // console.log('dataCarnot', dataCarnot)
     chartData1.value = dataCarnot as ChartDataRow[]
 
     const dataMega = settingsStore.getMegaData('chillerPower', [startTime, _endTime])
+    // console.log('dataMega', dataMega)
     chartData2.value = dataMega as ChartDataRow[]
   } catch (error) {
     console.error('Error fetching data:', error)
@@ -134,6 +176,14 @@ onMounted(async () => {
 
   <el-date-picker v-model="datetimerange" value-format="YYYY-MM-DD" type="daterange" range-separator="To"
     start-placeholder="Start date" end-placeholder="End date" :shortcuts="shortcuts" @change="onDatetimerangeChange" />
+  <div style="margin: 16px;">
+    <div><span style="display: inline-block; width: 200px;">Carnot's Total Power: </span>{{ totalPower1 ?
+      `${totalPower1.toFixed(0)}` : 'No data' }} kW</div>
+    <div><span style="display: inline-block; width: 200px;">Mega's Total Power: </span>{{ totalPower2 ?
+      `${totalPower2.toFixed(0)}` : 'No data' }} kW</div>
+    <div><span style="display: inline-block; width: 200px;">Difference: </span>{{ (totalPower1 - totalPower2).toFixed(0)
+    }} kW</div>
+  </div>
 
   <div v-loading="loading1">
     <VuePlotly :data="chartData1" :layout="layout1" :display-mode-bar="false"></VuePlotly>
