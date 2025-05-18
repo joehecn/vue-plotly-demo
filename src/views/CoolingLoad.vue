@@ -102,8 +102,16 @@ onMounted(() => {
 
 <template>
   <h1>Diff - Cooling Load</h1>
-  <el-date-picker v-model="datetimerange" value-format="YYYY-MM-DD" type="daterange" range-separator="To"
-    start-placeholder="Start date" end-placeholder="End date" :shortcuts="shortcuts" @change="onDatetimerangeChange" />
+  <el-date-picker
+    v-model="datetimerange"
+    value-format="YYYY-MM-DD"
+    type="daterange"
+    range-separator="To"
+    start-placeholder="Start date"
+    end-placeholder="End date"
+    :shortcuts="shortcuts"
+    @change="onDatetimerangeChange"
+  />
 
   <VuePlotly :data="chartData" :layout="layout" :display-mode-bar="false"></VuePlotly>
 </template>

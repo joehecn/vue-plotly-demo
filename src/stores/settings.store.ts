@@ -12,18 +12,15 @@ export type ChartDataRow = {
   type: string
 }
 
-// 你可以任意命名 `defineStore()` 的返回值，但最好使用 store 的名字，同时以 `use` 开头且以 `Store` 结尾。
-// (比如 `useUserStore`，`useCartStore`，`useProductStore`)
-// 第一个参数是你的应用中 Store 的唯一 ID。
 export const useSettingsStore = defineStore('settings', () => {
-  // 其他配置...
+  const fromCsv = ref(localStorage.getItem('vue-plotly-demo-from-csv') === 'true')
+
   const isCollapse = ref(localStorage.getItem('vue-plotly-demo-is-collapse') === 'true')
-  // const getIsCollapse = () => isCollapse.value
+
   const setIsCollapse = (collapse: boolean) => {
     localStorage.setItem('vue-plotly-demo-is-collapse', String(collapse))
     isCollapse.value = collapse
   }
-
 
   const _carnotToken = ref(localStorage.getItem('vue-plotly-demo-carnot-token') ?? '')
   const getCarnotToken = () => _carnotToken.value
@@ -33,6 +30,7 @@ export const useSettingsStore = defineStore('settings', () => {
   }
 
   const _csv = ref(localStorage.getItem('vue-plotly-demo-csv') ?? '')
+
   const getCsv = () => _csv.value
   const setCsv = (content: string) => {
     localStorage.setItem('vue-plotly-demo-csv', content)
@@ -114,13 +112,13 @@ export const useSettingsStore = defineStore('settings', () => {
 
         console.log(record['运行机组'])
         const chillers = JSON.parse(record['运行机组'] || '[]')
-          ;[1, 2, 3].forEach((chiller: number) => {
-            if (chillers.includes(chiller)) {
-              chillerMap.get(chiller)!.push(true)
-            } else {
-              chillerMap.get(chiller)!.push(false)
-            }
-          })
+        ;[1, 2, 3].forEach((chiller: number) => {
+          if (chillers.includes(chiller)) {
+            chillerMap.get(chiller)!.push(true)
+          } else {
+            chillerMap.get(chiller)!.push(false)
+          }
+        })
       } else {
         ;[1, 2, 3].forEach((chiller: number) => {
           chillerMap.get(chiller)!.push(null)
@@ -178,29 +176,29 @@ export const useSettingsStore = defineStore('settings', () => {
         const record = recordMap.value.get(recordTime)
 
         const cdwpAs = JSON.parse(record['水泵_A'] || '[]')
-          ;[1, 2, 3].forEach((chiller: number) => {
-            if (cdwpAs.includes(chiller)) {
-              cdwpMap.get(`水泵_A${chiller}`)!.push(1.0)
-            } else {
-              cdwpMap.get(`水泵_A${chiller}`)!.push(0.0)
-            }
-          })
+        ;[1, 2, 3].forEach((chiller: number) => {
+          if (cdwpAs.includes(chiller)) {
+            cdwpMap.get(`水泵_A${chiller}`)!.push(1.0)
+          } else {
+            cdwpMap.get(`水泵_A${chiller}`)!.push(0.0)
+          }
+        })
 
         const cdwpBs = JSON.parse(record['水泵_B'] || '[]')
-          ;[1, 2].forEach((chiller: number) => {
-            if (cdwpBs.includes(chiller)) {
-              cdwpMap.get(`水泵_B${chiller}`)!.push(1.0)
-            } else {
-              cdwpMap.get(`水泵_B${chiller}`)!.push(0.0)
-            }
-          })
+        ;[1, 2].forEach((chiller: number) => {
+          if (cdwpBs.includes(chiller)) {
+            cdwpMap.get(`水泵_B${chiller}`)!.push(1.0)
+          } else {
+            cdwpMap.get(`水泵_B${chiller}`)!.push(0.0)
+          }
+        })
       } else {
         ;[1, 2, 3].forEach((chiller: number) => {
           cdwpMap.get(`水泵_A${chiller}`)!.push(null)
         })
-          ;[1, 2].forEach((chiller: number) => {
-            cdwpMap.get(`水泵_B${chiller}`)!.push(null)
-          })
+        ;[1, 2].forEach((chiller: number) => {
+          cdwpMap.get(`水泵_B${chiller}`)!.push(null)
+        })
       }
     }
 
@@ -262,29 +260,29 @@ export const useSettingsStore = defineStore('settings', () => {
         const record = recordMap.value.get(recordTime)
 
         const ctAs = JSON.parse(record['冷却塔_A'] || '[]')
-          ;[1, 2].forEach((chiller: number) => {
-            if (ctAs.includes(chiller)) {
-              ctMap.get(`冷却塔_A${chiller}`)!.push(1.0)
-            } else {
-              ctMap.get(`冷却塔_A${chiller}`)!.push(0.0)
-            }
-          })
+        ;[1, 2].forEach((chiller: number) => {
+          if (ctAs.includes(chiller)) {
+            ctMap.get(`冷却塔_A${chiller}`)!.push(1.0)
+          } else {
+            ctMap.get(`冷却塔_A${chiller}`)!.push(0.0)
+          }
+        })
 
         const ctBs = JSON.parse(record['冷却塔_B'] || '[]')
-          ;[1].forEach((chiller: number) => {
-            if (ctBs.includes(chiller)) {
-              ctMap.get(`冷却塔_B${chiller}`)!.push(1.0)
-            } else {
-              ctMap.get(`冷却塔_B${chiller}`)!.push(0.0)
-            }
-          })
+        ;[1].forEach((chiller: number) => {
+          if (ctBs.includes(chiller)) {
+            ctMap.get(`冷却塔_B${chiller}`)!.push(1.0)
+          } else {
+            ctMap.get(`冷却塔_B${chiller}`)!.push(0.0)
+          }
+        })
       } else {
         ;[1, 2].forEach((chiller: number) => {
           ctMap.get(`冷却塔_A${chiller}`)!.push(null)
         })
-          ;[1].forEach((chiller: number) => {
-            ctMap.get(`冷却塔_B${chiller}`)!.push(null)
-          })
+        ;[1].forEach((chiller: number) => {
+          ctMap.get(`冷却塔_B${chiller}`)!.push(null)
+        })
       }
     }
 
@@ -336,14 +334,14 @@ export const useSettingsStore = defineStore('settings', () => {
         const chillers = JSON.parse(record['运行机组'] || '[]')
         const recordKw = record['机组能耗(kW)'].replace(/'/g, '')
         const chillerKws = JSON.parse(recordKw || '[]')
-          ;[1, 2, 3].forEach((chiller: number) => {
-            const index = chillers.indexOf(chiller)
-            if (index > -1) {
-              chillerMap.get(chiller)!.push(chillerKws[index])
-            } else {
-              chillerMap.get(chiller)!.push(null)
-            }
-          })
+        ;[1, 2, 3].forEach((chiller: number) => {
+          const index = chillers.indexOf(chiller)
+          if (index > -1) {
+            chillerMap.get(chiller)!.push(chillerKws[index])
+          } else {
+            chillerMap.get(chiller)!.push(null)
+          }
+        })
       } else {
         ;[1, 2, 3].forEach((chiller: number) => {
           chillerMap.get(chiller)!.push(null)
@@ -403,33 +401,33 @@ export const useSettingsStore = defineStore('settings', () => {
         const cdwpAs = JSON.parse(record['水泵_A'] || '[]')
         const recordAKw = record['水泵能耗_A(kW)'].replace(/'/g, '')
         const cdwpAKws = JSON.parse(recordAKw || '[]')
-          ;[1, 2, 3].forEach((chiller: number) => {
-            const index = cdwpAs.indexOf(chiller)
-            if (index > -1) {
-              cdwpMap.get(`水泵_A${chiller}`)!.push(cdwpAKws[index])
-            } else {
-              cdwpMap.get(`水泵_A${chiller}`)!.push(null)
-            }
-          })
+        ;[1, 2, 3].forEach((chiller: number) => {
+          const index = cdwpAs.indexOf(chiller)
+          if (index > -1) {
+            cdwpMap.get(`水泵_A${chiller}`)!.push(cdwpAKws[index])
+          } else {
+            cdwpMap.get(`水泵_A${chiller}`)!.push(null)
+          }
+        })
 
         const cdwpBs = JSON.parse(record['水泵_B'] || '[]')
         const recordBKw = record['水泵能耗_B(kW)'].replace(/'/g, '')
         const cdwpBKws = JSON.parse(recordBKw || '[]')
-          ;[1, 2].forEach((chiller: number) => {
-            const index = cdwpBs.indexOf(chiller)
-            if (index > -1) {
-              cdwpMap.get(`水泵_B${chiller}`)!.push(cdwpBKws[index])
-            } else {
-              cdwpMap.get(`水泵_B${chiller}`)!.push(null)
-            }
-          })
+        ;[1, 2].forEach((chiller: number) => {
+          const index = cdwpBs.indexOf(chiller)
+          if (index > -1) {
+            cdwpMap.get(`水泵_B${chiller}`)!.push(cdwpBKws[index])
+          } else {
+            cdwpMap.get(`水泵_B${chiller}`)!.push(null)
+          }
+        })
       } else {
         ;[1, 2, 3].forEach((chiller: number) => {
           cdwpMap.get(`水泵_A${chiller}`)!.push(null)
         })
-          ;[1, 2].forEach((chiller: number) => {
-            cdwpMap.get(`水泵_B${chiller}`)!.push(null)
-          })
+        ;[1, 2].forEach((chiller: number) => {
+          cdwpMap.get(`水泵_B${chiller}`)!.push(null)
+        })
       }
     }
 
@@ -493,33 +491,33 @@ export const useSettingsStore = defineStore('settings', () => {
         const ctAs = JSON.parse(record['冷却塔_A'] || '[]')
         const recordAKw = record['冷却塔能耗_A(kW)'].replace(/'/g, '')
         const ctAKws = JSON.parse(recordAKw || '[]')
-          ;[1, 2].forEach((chiller: number) => {
-            const index = ctAs.indexOf(chiller)
-            if (index > -1) {
-              ctMap.get(`冷却塔_A${chiller}`)!.push(ctAKws[index])
-            } else {
-              ctMap.get(`冷却塔_A${chiller}`)!.push(null)
-            }
-          })
+        ;[1, 2].forEach((chiller: number) => {
+          const index = ctAs.indexOf(chiller)
+          if (index > -1) {
+            ctMap.get(`冷却塔_A${chiller}`)!.push(ctAKws[index])
+          } else {
+            ctMap.get(`冷却塔_A${chiller}`)!.push(null)
+          }
+        })
 
         const ctBs = JSON.parse(record['冷却塔_B'] || '[]')
         const recordBKw = record['冷却塔能耗_B(kW)'].replace(/'/g, '')
         const ctBKws = JSON.parse(recordBKw || '[]')
-          ;[1].forEach((chiller: number) => {
-            const index = ctBs.indexOf(chiller)
-            if (index > -1) {
-              ctMap.get(`冷却塔_B${chiller}`)!.push(ctBKws[index])
-            } else {
-              ctMap.get(`冷却塔_B${chiller}`)!.push(null)
-            }
-          })
+        ;[1].forEach((chiller: number) => {
+          const index = ctBs.indexOf(chiller)
+          if (index > -1) {
+            ctMap.get(`冷却塔_B${chiller}`)!.push(ctBKws[index])
+          } else {
+            ctMap.get(`冷却塔_B${chiller}`)!.push(null)
+          }
+        })
       } else {
         ;[1, 2].forEach((chiller: number) => {
           ctMap.get(`冷却塔_A${chiller}`)!.push(null)
         })
-          ;[1].forEach((chiller: number) => {
-            ctMap.get(`冷却塔_B${chiller}`)!.push(null)
-          })
+        ;[1].forEach((chiller: number) => {
+          ctMap.get(`冷却塔_B${chiller}`)!.push(null)
+        })
       }
     }
 
@@ -567,7 +565,9 @@ export const useSettingsStore = defineStore('settings', () => {
         // console.log(record['冷量预测(kW)'])
 
         coolingMap.get('冷量需求(kW)')!.push(Number(record['冷量需求(kW)']))
-        coolingMap.get('冷量预测(kW)')!.push(record['冷量预测(kW)'] ? Number(record['冷量预测(kW)']) : null)
+        coolingMap
+          .get('冷量预测(kW)')!
+          .push(record['冷量预测(kW)'] ? Number(record['冷量预测(kW)']) : null)
       } else {
         coolingMap.get('冷量需求(kW)')!.push(null)
         coolingMap.get('冷量预测(kW)')!.push(null)
@@ -607,6 +607,8 @@ export const useSettingsStore = defineStore('settings', () => {
     return dataMap.get(method)?.([startTime, endTime]) ?? []
   }
   return {
+    fromCsv,
+
     isCollapse,
     // getIsCollapse,
     setIsCollapse,

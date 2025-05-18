@@ -51,7 +51,7 @@ const router = createRouter({
       path: '/cooling-load',
       name: 'cooling-load',
       component: () => import('../views/CoolingLoad.vue'),
-    }
+    },
   ],
 })
 

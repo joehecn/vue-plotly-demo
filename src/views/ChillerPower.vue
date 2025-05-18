@@ -174,15 +174,29 @@ onMounted(async () => {
 <template>
   <h1>Power - Chiller</h1>
 
-  <el-date-picker v-model="datetimerange" value-format="YYYY-MM-DD" type="daterange" range-separator="To"
-    start-placeholder="Start date" end-placeholder="End date" :shortcuts="shortcuts" @change="onDatetimerangeChange" />
-  <div style="margin: 16px;">
-    <div><span style="display: inline-block; width: 200px;">Carnot's Total Power: </span>{{ totalPower1 ?
-      `${totalPower1.toFixed(0)}` : 'No data' }} kW</div>
-    <div><span style="display: inline-block; width: 200px;">Mega's Total Power: </span>{{ totalPower2 ?
-      `${totalPower2.toFixed(0)}` : 'No data' }} kW</div>
-    <div><span style="display: inline-block; width: 200px;">Difference: </span>{{ (totalPower1 - totalPower2).toFixed(0)
-    }} kW</div>
+  <el-date-picker
+    v-model="datetimerange"
+    value-format="YYYY-MM-DD"
+    type="daterange"
+    range-separator="To"
+    start-placeholder="Start date"
+    end-placeholder="End date"
+    :shortcuts="shortcuts"
+    @change="onDatetimerangeChange"
+  />
+  <div style="margin: 16px">
+    <div>
+      <span style="display: inline-block; width: 200px">Carnot's Total Power: </span
+      >{{ totalPower1 ? `${totalPower1.toFixed(0)}` : 'No data' }} kW
+    </div>
+    <div>
+      <span style="display: inline-block; width: 200px">Mega's Total Power: </span
+      >{{ totalPower2 ? `${totalPower2.toFixed(0)}` : 'No data' }} kW
+    </div>
+    <div>
+      <span style="display: inline-block; width: 200px">Difference: </span
+      >{{ (totalPower1 - totalPower2).toFixed(0) }} kW
+    </div>
   </div>
 
   <div v-loading="loading1">

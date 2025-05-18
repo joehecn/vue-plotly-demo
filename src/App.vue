@@ -1,14 +1,24 @@
 <script setup lang="ts">
-import { computed, ref, watch } from 'vue'
+import { computed, onBeforeUnmount, onMounted, ref, watch } from 'vue'
 import { useRoute, RouterView } from 'vue-router'
 import { useSettingsStore } from './stores/settings.store'
+import { getCurrentUser, loginCarnot } from './api/carnot'
+import CronJobWorker from '@/worker/cron_job.worker?worker'
+
+const worker = new CronJobWorker()
+
+worker.onmessage = (event) => {
+  console.log(event.data)
+}
+
+worker.onerror = (error) => {
+  console.error('Worker error:', error)
+}
 
 const route = useRoute()
 const settingsStore = useSettingsStore()
 
 const routeName = ref('')
-
-// const isCollapse = ref(true)
 
 const asideWidth = computed(() => {
   return settingsStore.isCollapse ? '64px' : '240px'
@@ -16,6 +26,22 @@ const asideWidth = computed(() => {
 
 watch(route, (to) => {
   routeName.value = to.name as string
+})
+
+onMounted(async () => {
+  worker.postMessage({ method: 'start' })
+
+  const user = await getCurrentUser()
+  console.log({ user })
+
+  if (!user) {
+    await loginCarnot()
+  }
+})
+
+onBeforeUnmount(() => {
+  worker.postMessage({ method: 'stop' })
+  worker.terminate()
 })
 </script>
 

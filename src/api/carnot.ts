@@ -1,13 +1,11 @@
 /**
  * https://carnot-haeco2.web.app
- * user: mega
+ * username: mega
  * password: mega123
  */
 
 import { useSettingsStore } from '@/stores/settings.store'
 import { ElNotification } from 'element-plus'
-
-const settingsStore = useSettingsStore()
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 export type SafeAny = any
@@ -406,6 +404,7 @@ const dataMap = new Map<string, (data: SafeAny) => object>([
 
 export const fetchCarnotData = async (method: string, [startTime, endTime]: string[]) => {
   try {
+    const settingsStore = useSettingsStore()
     const token = settingsStore.getCarnotToken()
 
     if (!token) throw new Error('Carnot token is not set')
@@ -416,7 +415,6 @@ export const fetchCarnotData = async (method: string, [startTime, endTime]: stri
         'Content-Type': 'application/json',
         Authorization: `Bearer ${token}`,
       },
-      // body: JSON.stringify(methodMap.get(method)?.(startTime, `${endTime} 23:59:59`) ?? {}),
       body: JSON.stringify(methodMap.get(method)?.(startTime, endTime) ?? {}),
     })
 
@@ -426,6 +424,64 @@ export const fetchCarnotData = async (method: string, [startTime, endTime]: stri
     if (data.message) throw new Error(data.message)
 
     return dataMap.get(method)?.(data) ?? []
+  } catch (error: SafeAny) {
+    console.error(error)
+    ElNotification({
+      title: 'Error',
+      message: error.message,
+      type: 'error',
+    })
+  }
+}
+
+export const getCurrentUser = async () => {
+  try {
+    const settingsStore = useSettingsStore()
+    const token = settingsStore.getCarnotToken()
+
+    if (!token) throw new Error('Carnot token is not set')
+
+    const response = await fetch('https://haeco-demo-mrtzp2lq4q-df.a.run.app/current-user/', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        Authorization: `Bearer ${token}`,
+      },
+    })
+
+    const data = await response.json()
+    if (data.message) throw new Error(data.message)
+
+    return data.user
+  } catch (error: SafeAny) {
+    console.error(error)
+    return null
+  }
+}
+
+export const loginCarnot = async () => {
+  const username = 'mega'
+  const password = 'mega123'
+
+  try {
+    const response = await fetch('https://haeco-demo-mrtzp2lq4q-df.a.run.app/login/', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({
+        user_name: username,
+        password,
+      }),
+    })
+
+    const data = await response.json()
+    console.log({ data })
+
+    if (data.message) throw new Error(data.message)
+
+    const settingsStore = useSettingsStore()
+    settingsStore.setCarnotToken(data.token)
   } catch (error: SafeAny) {
     console.error(error)
     ElNotification({
