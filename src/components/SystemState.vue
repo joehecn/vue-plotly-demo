@@ -48,71 +48,71 @@ const { lastStrategyRow } = storeToRefs(settingsStore)
 const getPolylines = (pre = 'B', cls = '') => {
   return [
     // 8 边 CH to CDWP
-    { id: `${pre}_CH1_CDWP1`, cls, points: '300 62 400 62 400 93 500 93 500 55.8 600 55.8' },
-    { id: `${pre}_CH1_CDWP2`, cls, points: '300 62 400 62 400 93 600 93' },
-    { id: `${pre}_CH1_CDWP3`, cls, points: '300 62 400 62 400 93 500 93 500 130.2 600 130.2' },
+    { id: `${pre}_CH1_CDWP1`, cls, points: '360 62 480 62 480 93 600 93 600 55.8 720 55.8' },
+    { id: `${pre}_CH1_CDWP2`, cls, points: '360 62 480 62 480 93 720 93' },
+    { id: `${pre}_CH1_CDWP3`, cls, points: '360 62 480 62 480 93 600 93 600 130.2 720 130.2' },
 
-    { id: `${pre}_CH3_CDWP1`, cls, points: '300 124 400 124 400 93 500 93 500 55.8 600 55.8' },
-    { id: `${pre}_CH3_CDWP2`, cls, points: '300 124 400 124 400 93 600 93' },
-    { id: `${pre}_CH3_CDWP3`, cls, points: '300 124 400 124 400 93 500 93 500 130.2 600 130.2' },
+    { id: `${pre}_CH3_CDWP1`, cls, points: '360 124 480 124 480 93 600 93 600 55.8 720 55.8' },
+    { id: `${pre}_CH3_CDWP2`, cls, points: '360 124 480 124 480 93 720 93' },
+    { id: `${pre}_CH3_CDWP3`, cls, points: '360 124 480 124 480 93 600 93 600 130.2 720 130.2' },
 
-    { id: `${pre}_CH4_CDWP4`, cls, points: '300 186 500 186 500 167.4 600 167.4' },
-    { id: `${pre}_CH4_CDWP5`, cls, points: '300 186 500 186 500 204.6 600 204.6' },
+    { id: `${pre}_CH4_CDWP4`, cls, points: '360 186 600 186 600 167.4 720 167.4' },
+    { id: `${pre}_CH4_CDWP5`, cls, points: '360 186 600 186 600 204.6 720 204.6' },
 
     // 8 边 CDWP to CT
-    { id: `${pre}_CDWP1_CT1`, cls, points: '600 55.8 700 55.8 700 93 800 93 800 62 900 62' },
-    { id: `${pre}_CDWP1_CT3`, cls, points: '600 55.8 700 55.8 700 93 800 93 800 124 900 124' },
+    { id: `${pre}_CDWP1_CT1`, cls, points: '720 55.8 840 55.8 840 93 960 93 960 62 1080 62' },
+    { id: `${pre}_CDWP1_CT3`, cls, points: '720 55.8 840 55.8 840 93 960 93 960 124 1080 124' },
 
-    { id: `${pre}_CDWP2_CT1`, cls, points: '600 93 800 93 800 62 900 62' },
-    { id: `${pre}_CDWP2_CT3`, cls, points: '600 93 800 93 800 124 900 124' },
+    { id: `${pre}_CDWP2_CT1`, cls, points: '720 93 960 93 960 62 1080 62' },
+    { id: `${pre}_CDWP2_CT3`, cls, points: '720 93 960 93 960 124 1080 124' },
 
-    { id: `${pre}_CDWP3_CT1`, cls, points: '600 130.2 700 130.2 700 93 800 93 800 62 900 62' },
-    { id: `${pre}_CDWP3_CT3`, cls, points: '600 130.2 700 130.2 700 93 800 93 800 124 900 124' },
+    { id: `${pre}_CDWP3_CT1`, cls, points: '720 130.2 840 130.2 840 93 960 93 960 62 1080 62' },
+    { id: `${pre}_CDWP3_CT3`, cls, points: '720 130.2 840 130.2 840 93 960 93 960 124 1080 124' },
 
-    { id: `${pre}_CDWP4_CT4`, cls, points: '600 167.4 700 167.4 700 186 900 186' },
-    { id: `${pre}_CDWP5_CT4`, cls, points: '600 204.6 700 204.6 700 186 900 186' },
+    { id: `${pre}_CDWP4_CT4`, cls, points: '720 167.4 840 167.4 840 186 1080 186' },
+    { id: `${pre}_CDWP5_CT4`, cls, points: '720 204.6 840 204.6 840 186 1080 186' },
 
     // 5 边 CT to CH
     {
       id: `${pre}_CT1_CH1`,
       cls,
-      points: '900 62 1000 62 1000 93 1100 93 1100 18.6 100 18.6 100 93 200 93 200 62 300 62',
+      points: '1080 62 1200 62 1200 93 1320 93 1320 18.6 120 18.6 120 93 240 93 240 62 360 62',
     },
     {
       id: `${pre}_CT1_CH3`,
       cls,
-      points: '900 62 1000 62 1000 93 1100 93 1100 18.6 100 18.6 100 93 200 93 200 124 300 124',
+      points: '1080 62 1200 62 1200 93 1320 93 1320 18.6 120 18.6 120 93 240 93 240 124 360 124',
     },
 
     {
       id: `${pre}_CT3_CH1`,
       cls,
-      points: '900 124 1000 124 1000 93 1100 93 1100 18.6 100 18.6 100 93 200 93 200 62 300 62',
+      points: '1080 124 1200 124 1200 93 1320 93 1320 18.6 120 18.6 120 93 240 93 240 62 360 62',
     },
     {
       id: `${pre}_CT3_CH3`,
       cls,
-      points: '900 124 1000 124 1000 93 1100 93 1100 18.6 100 18.6 100 93 200 93 200 124 300 124',
+      points: '1080 124 1200 124 1200 93 1320 93 1320 18.6 120 18.6 120 93 240 93 240 124 360 124',
     },
 
-    { id: `${pre}_CT4_CH4`, cls, points: '900 186 1000 186 1000 241.8 200 241.8 200 186 300 186' },
+    { id: `${pre}_CT4_CH4`, cls, points: '1080 186 1200 186 1200 241.8 240 241.8 240 186 360 186' },
   ]
 }
 const getNodes = () => {
   return [
-    { id: 'CH1', cls: '', loadingRate: '', supplyTemp: '', cx: 300, cy: 62 }, // progress-ring
-    { id: 'CH3', cls: '', loadingRate: '', supplyTemp: '', cx: 300, cy: 124 },
-    { id: 'CH4', cls: '', loadingRate: '', supplyTemp: '', cx: 300, cy: 186 },
+    { id: 'CH1', cls: '', loadingRate: '', supplyTemp: '', cx: 360, cy: 62 }, // progress-ring
+    { id: 'CH3', cls: '', loadingRate: '', supplyTemp: '', cx: 360, cy: 124 },
+    { id: 'CH4', cls: '', loadingRate: '', supplyTemp: '', cx: 360, cy: 186 },
 
-    { id: 'CDWP1', cls: '', cx: 600, cy: 55.8 },
-    { id: 'CDWP2', cls: '', cx: 600, cy: 93 },
-    { id: 'CDWP3', cls: '', cx: 600, cy: 130.2 },
-    { id: 'CDWP4', cls: '', frequency: '', cx: 600, cy: 167.4 },
-    { id: 'CDWP5', cls: '', frequency: '', cx: 600, cy: 204.8 },
+    { id: 'CDWP1', cls: '', cx: 720, cy: 55.8 },
+    { id: 'CDWP2', cls: '', cx: 720, cy: 93 },
+    { id: 'CDWP3', cls: '', cx: 720, cy: 130.2 },
+    { id: 'CDWP4', cls: '', frequency: '', cx: 720, cy: 167.4 },
+    { id: 'CDWP5', cls: '', frequency: '', cx: 720, cy: 204.8 },
 
-    { id: 'CT1', cls: '', cx: 900, cy: 62 },
-    { id: 'CT3', cls: '', cx: 900, cy: 124 },
-    { id: 'CT4', cls: '', speed: '', cx: 900, cy: 186 },
+    { id: 'CT1', cls: '', cx: 1080, cy: 62 },
+    { id: 'CT3', cls: '', cx: 1080, cy: 124 },
+    { id: 'CT4', cls: '', speed: '', cx: 1080, cy: 186 },
   ]
 }
 
@@ -314,46 +314,65 @@ watch(
 </script>
 
 <template>
-  <svg width="100%" height="252">
-    <text x="160" y="10" text-anchor="middle" fill="#999" font-size="12" font-family="Arial">
-      {{ `冷量预测: ${predictedLoad} kW` }}
-    </text>
+  <div style="width: 100%; overflow-x: auto">
+    <svg width="1440" height="252">
+      <text x="160" y="10" fill="#999" font-size="12" font-family="Arial">
+        {{ `冷量预测: ${predictedLoad} kW` }}
+      </text>
 
-    <text x="320" y="10" text-anchor="middle" fill="#999" font-size="12" font-family="Arial">
-      {{ `冷量需求: ${coolingDemand} kW` }}
-    </text>
+      <text x="320" y="10" fill="#999" font-size="12" font-family="Arial">
+        {{ `冷量需求: ${coolingDemand} kW` }}
+      </text>
 
-    <text x="480" y="10" text-anchor="middle" fill="#999" font-size="12" font-family="Arial">
-      {{ `机组总能耗: ${totalEnergy} kW` }}
-    </text>
+      <text x="480" y="10" fill="#999" font-size="12" font-family="Arial">
+        {{ `机组总能耗: ${totalEnergy} kW` }}
+      </text>
 
-    <!-- 边打底 -->
-    <polyline
-      v-for="pl in backPolylines"
-      :key="pl.id"
-      :class="pl.cls"
-      :points="pl.points"
-      stroke-width="4"
-    />
+      <!-- 边打底 -->
+      <polyline
+        v-for="pl in backPolylines"
+        :key="pl.id"
+        :class="pl.cls"
+        :points="pl.points"
+        stroke-width="4"
+      />
 
-    <!-- 边 -->
-    <polyline
-      v-for="pl in polylines"
-      :key="pl.id"
-      :class="pl.cls"
-      :points="pl.points"
-      stroke-width="4"
-    />
+      <!-- 边 -->
+      <polyline
+        v-for="pl in polylines"
+        :key="pl.id"
+        :class="pl.cls"
+        :points="pl.points"
+        stroke-width="4"
+      />
 
-    <!-- 节点 -->
-    <CustomNode v-for="cc in circles" :key="cc.id" :cc="cc" />
-  </svg>
+      <!-- 冷冻侧 -->
+      <path
+        d="M360 62 V86 H250 A10 10 0 0 0 230 86 H130 A10 10 0 0 0 110 86 H0"
+        fill="none"
+        stroke="#eee"
+        stroke-width="4"
+      />
+
+      <path d="M360 124 V148 H0" fill="none" stroke="#eee" stroke-width="4" />
+
+      <path
+        d="M360 186 V210 H250 A10 10 0 0 0 230 210 H0"
+        fill="none"
+        stroke="#eee"
+        stroke-width="4"
+      />
+
+      <!-- 节点 -->
+      <CustomNode v-for="cc in circles" :key="cc.id" :cc="cc" />
+    </svg>
+  </div>
 </template>
 
 <style>
 circle {
-  fill: #ddd;
-  stroke: #ddd;
+  fill: #eee;
+  stroke: #eee;
 }
 
 polyline {
@@ -361,7 +380,7 @@ polyline {
 }
 
 .back-line {
-  stroke: #ddd;
+  stroke: #eee;
 }
 
 /* 定义绘制动画 */

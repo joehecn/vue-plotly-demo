@@ -21,52 +21,32 @@ defineProps<{
   <circle :cx="cc.cx" :cy="cc.cy" r="8" fill="#fff" />
 
   <text
+    :class="`${cc.cls}-text`"
     :x="cc.cx"
     :y="cc.cy - 14"
-    text-anchor="middle"
-    fill="#3498db"
+    text-anchor="end"
+    fill="#ddd"
     font-size="12"
     font-family="Arial"
   >
     {{ cc.id }}
   </text>
 
-  <text
-    :x="cc.cx + 56"
-    :y="cc.cy - 8"
-    text-anchor="middle"
-    fill="#3498db"
-    font-size="12"
-    font-family="Arial"
-  >
+  <text :x="cc.cx + 32" :y="cc.cy - 8" fill="#13ce66" font-size="12" font-family="Arial">
     {{ cc.loadingRate ? `负载: ${cc.loadingRate}%` : '' }}
   </text>
-  <text
-    :x="cc.cx + 56"
-    :y="cc.cy - 8"
-    text-anchor="middle"
-    fill="#3498db"
-    font-size="12"
-    font-family="Arial"
-  >
+  <text :x="cc.cx + 32" :y="cc.cy - 8" fill="#13ce66" font-size="12" font-family="Arial">
     {{ cc.frequency ? `频率: ${cc.frequency}hZ` : '' }}
   </text>
-  <text
-    :x="cc.cx + 56"
-    :y="cc.cy - 8"
-    text-anchor="middle"
-    fill="#3498db"
-    font-size="12"
-    font-family="Arial"
-  >
+  <text :x="cc.cx + 32" :y="cc.cy - 8" fill="#13ce66" font-size="12" font-family="Arial">
     {{ cc.speed ? `频率: ${cc.speed}hZ` : '' }}
   </text>
 
   <text
-    :x="cc.cx + 56"
+    :x="8"
     :y="cc.cy + 18"
-    text-anchor="middle"
-    fill="#3498db"
+    text-anchor="start"
+    fill="#409eff"
     font-size="12"
     font-family="Arial"
   >
@@ -75,6 +55,10 @@ defineProps<{
 </template>
 
 <style scoped>
+.progress-ring-text {
+  fill: #13ce66;
+}
+
 /* 计算圆周长的工具函数（实际开发中可通过JS计算） */
 .progress-ring {
   --radius: 10;
@@ -83,7 +67,7 @@ defineProps<{
   /* 2πr ≈ 2 * 3.14 * 10 */
 
   fill: none;
-  stroke: #409eff;
+  stroke: #13ce66;
   stroke-width: 2;
   stroke-linecap: round;
   stroke-dasharray: calc(var(--circumference) / 4) calc(var(--circumference) / 4);

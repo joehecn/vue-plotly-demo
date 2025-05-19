@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { onMounted, ref } from 'vue'
+import { onBeforeUpdate, onMounted, ref } from 'vue'
 import { formatBytes } from '@/tool/format_bytes'
 import FromCsv from '@/components/FromCsv.vue'
 import ChillerStrategy from '@/components/ChillerStrategy.vue'
@@ -17,7 +17,10 @@ const quota = ref('')
 const columns = ref<SafeAny[]>([])
 const data = ref<SafeAny[]>([])
 
-// 记录当前选中行的 ID
+// 记录当前选中行
+const currentIndex = ref(-1) // 当前选中行索引
+const tableContainer = ref<HTMLElement | null>(null) // 表格容器引用
+const tableRef = ref<SafeAny>(null) // 表格引用
 const selectedRow = ref<SafeAny | null>(null)
 
 const handleFromCsvChange = async (value: boolean) => {
@@ -55,20 +58,41 @@ const refreshTable = () => {
   }
 }
 
-// 点击行事件处理
-const rowEventHandlers = {
-  onClick: ({ rowData }: { rowData: SafeAny }) => {
-    if (fromCsv.value) return
+// 统一行选择逻辑
+const handleRowSelection = (newIndex: number) => {
+  if (fromCsv.value || newIndex < 0 || newIndex >= data.value.length) return
 
-    selectedRow.value = rowData
-  },
+  currentIndex.value = newIndex
+  selectedRow.value = data.value[newIndex]
+  scrollToCurrentRow()
 }
 
-// 动态行类名（高亮逻辑）
-const getRowClass = ({ rowData }: { rowData: SafeAny }) => {
-  if (fromCsv.value) return ''
+// 合并事件处理逻辑
+const unifiedEventHandlers = {
+  // 键盘事件
+  keyboard: {
+    ArrowDown: () => handleRowSelection(currentIndex.value + 1),
+    ArrowUp: () => handleRowSelection(currentIndex.value - 1),
+  },
+  // 鼠标点击事件
+  click: ({ rowIndex }: { rowIndex: number }) => handleRowSelection(rowIndex),
+}
 
-  return rowData.id === selectedRow.value?.id ? 'highlight-row' : ''
+// 滚动到选中行
+const scrollToCurrentRow = () => {
+  // 调用虚拟表格的滚动方法（假设已通过 ref 获取表格实例）
+  tableRef.value?.scrollToRow(currentIndex.value, 'start')
+}
+
+// 动态行类名（优化后）
+const getRowClass = ({ rowIndex }: { rowIndex: number }) =>
+  fromCsv.value ? '' : rowIndex === currentIndex.value ? 'highlight-row' : ''
+
+// 模板事件绑定
+const handleKeyDown = (e: KeyboardEvent) => {
+  if (unifiedEventHandlers.keyboard[e.key as keyof typeof unifiedEventHandlers.keyboard]) {
+    unifiedEventHandlers.keyboard[e.key as keyof typeof unifiedEventHandlers.keyboard]()
+  }
 }
 
 onMounted(() => {
@@ -78,6 +102,11 @@ onMounted(() => {
   })
 
   refreshTable()
+})
+
+onBeforeUpdate(() => {
+  // 确保容器获取焦点
+  tableContainer.value?.focus()
 })
 </script>
 
@@ -103,17 +132,18 @@ onMounted(() => {
 
   <ChillerStrategy v-else :selected-row="selectedRow" />
 
-  <div style="height: 400px">
+  <div ref="tableContainer" tabindex="0" @keydown="handleKeyDown" style="height: 400px">
     <el-auto-resizer>
       <template #default="{ height, width }">
         <el-table-v2
+          ref="tableRef"
           :columns="columns"
           :data="data"
           :width="width"
           :height="height"
           fixed
           :row-class="getRowClass"
-          :row-event-handlers="rowEventHandlers"
+          :row-event-handlers="{ onClick: unifiedEventHandlers.click }"
         />
       </template>
     </el-auto-resizer>
@@ -123,5 +153,10 @@ onMounted(() => {
 <style>
 .highlight-row {
   background-color: var(--el-color-success-light-5) !important;
+}
+
+/* 使容器可聚焦 */
+div[tabindex='0']:focus {
+  outline: none;
 }
 </style>
