@@ -211,6 +211,7 @@ const methodMap = new Map<string, (startTime: string, endTime: string) => object
 // 运行机组 [1,2,3] -> [Chiller1, Chiller3, Chiller4]
 const coverChillerData = (data: SafeAny) => {
   const { Chiller1, Chiller3, Chiller4, timestamp } = data
+
   return [
     {
       x: timestamp,

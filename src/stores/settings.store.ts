@@ -81,13 +81,13 @@ export const useSettingsStore = defineStore('settings', () => {
       return [
         dayjs(startTime, 'YYYY-MM-DD HH:mm').format('YYYY-MM-DD'),
         dayjs(endTime, 'YYYY-MM-DD HH:mm').format('YYYY-MM-DD'),
-      ]
+      ].sort((a, b) => (a > b ? 1 : -1))
     }
 
     return [
       dayjs(startTime, 'M/D/YYYY H:mm').format('YYYY-MM-DD'),
       dayjs(endTime, 'M/D/YYYY H:mm').format('YYYY-MM-DD'),
-    ]
+    ].sort((a, b) => (a > b ? 1 : -1))
   })
 
   const heads = computed(() => {
@@ -119,7 +119,7 @@ export const useSettingsStore = defineStore('settings', () => {
       if (recordMap.value.has(recordTime)) {
         const record = recordMap.value.get(recordTime)
 
-        console.log(record['运行机组'])
+        // console.log(record['运行机组'])
         const chillers = JSON.parse(record['运行机组'] || '[]')
         ;[1, 2, 3].forEach((chiller: number) => {
           if (chillers.includes(chiller)) {
@@ -616,19 +616,18 @@ export const useSettingsStore = defineStore('settings', () => {
     return dataMap.get(method)?.([startTime, endTime]) ?? []
   }
 
-  const handleUploadCsvFromIndexedDB = async (requestTime = Date.now()) => {
+  const handleUploadCsvFromIndexedDB = async () => {
     let rows = await IndexedDB.getAll()
     rows = rows.sort((a, b) => b.time - a.time)
 
-    if (rows.length) {
-      const lastRow = rows[0]
-      const { time, row } = lastRow
+    // if (rows.length) {
+    // const lastRow = rows[0]
+    // const { time, row } = lastRow
 
-      const content = [csvHeader, row].join('\n')
-      const records = _getRecords(content)
-      lastStrategyRow.value = { time, row: records[0], requestTime: Math.floor(requestTime / 1000) }
-    }
-    // if (lastRow)
+    // const content = [csvHeader, row].join('\n')
+    // const records = _getRecords(content)
+    // lastStrategyRow.value = { time, row: records[0], requestTime: Math.floor(requestTime / 1000) }
+    // }
 
     const csv = rows.map((item) => item.row)
     setCsv([csvHeader, ...csv].join('\n'))

@@ -13,7 +13,7 @@ const worker = new CronJobWorker()
 worker.onmessage = async (event) => {
   if (event.data.type === 'heartbeat') {
     if (!settingsStore.fromCsv) {
-      await settingsStore.handleUploadCsvFromIndexedDB(event.data.time)
+      await settingsStore.handleUploadCsvFromIndexedDB() // event.data.time
     }
   }
 }

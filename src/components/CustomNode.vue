@@ -49,7 +49,7 @@ defineProps<{
     font-size="12"
     font-family="Arial"
   >
-    {{ cc.frequency ? `频率: ${cc.frequency}hz` : '' }}
+    {{ cc.frequency ? `频率: ${cc.frequency}hZ` : '' }}
   </text>
   <text
     :x="cc.cx + 56"
@@ -59,7 +59,7 @@ defineProps<{
     font-size="12"
     font-family="Arial"
   >
-    {{ cc.speed ? `频率: ${cc.speed}hz` : '' }}
+    {{ cc.speed ? `频率: ${cc.speed}hZ` : '' }}
   </text>
 
   <text

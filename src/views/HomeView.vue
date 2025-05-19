@@ -49,17 +49,25 @@ const refreshTable = () => {
 
   columns.value = generateColumns(settingsStore.heads)
   data.value = generateData(settingsStore.records)
+
+  if (!fromCsv.value) {
+    selectedRow.value = data.value[0] || null
+  }
 }
 
 // 点击行事件处理
 const rowEventHandlers = {
   onClick: ({ rowData }: { rowData: SafeAny }) => {
+    if (fromCsv.value) return
+
     selectedRow.value = rowData
   },
 }
 
 // 动态行类名（高亮逻辑）
 const getRowClass = ({ rowData }: { rowData: SafeAny }) => {
+  if (fromCsv.value) return ''
+
   return rowData.id === selectedRow.value?.id ? 'highlight-row' : ''
 }
 
