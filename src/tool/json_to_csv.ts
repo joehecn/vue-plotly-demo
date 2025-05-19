@@ -118,7 +118,7 @@ export const jsonToCsvRow = (json: SafeAny) => {
     // 冷却塔能耗_B(kW)
     `"${JSON.stringify(json.cooling_system.group_b.towers.power)}"`,
     // 冷量预测(kW)
-    json.predicted_load
+    json.predicted_load,
   ]
 
   return row.join(',')

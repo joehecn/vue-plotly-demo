@@ -5,18 +5,22 @@ import { useSettingsStore } from './stores/settings.store'
 import { getCurrentUser, loginCarnot } from './api/carnot'
 import CronJobWorker from '@/worker/cron_job.worker?worker'
 
+const route = useRoute()
+const settingsStore = useSettingsStore()
+
 const worker = new CronJobWorker()
 
-worker.onmessage = (event) => {
-  console.log(event.data)
+worker.onmessage = async (event) => {
+  if (event.data.type === 'heartbeat') {
+    if (!settingsStore.fromCsv) {
+      await settingsStore.handleUploadCsvFromIndexedDB(event.data.time)
+    }
+  }
 }
 
 worker.onerror = (error) => {
   console.error('Worker error:', error)
 }
-
-const route = useRoute()
-const settingsStore = useSettingsStore()
 
 const routeName = ref('')
 
@@ -32,7 +36,7 @@ onMounted(async () => {
   worker.postMessage({ method: 'start' })
 
   const user = await getCurrentUser()
-  console.log({ user })
+  // console.log({ user })
 
   if (!user) {
     await loginCarnot()

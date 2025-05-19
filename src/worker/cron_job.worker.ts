@@ -109,15 +109,13 @@ class TimerJob {
       if (this.running) return
       this.running = true
 
-      self.postMessage({ method: 'doJobBack', type: 'heartbeat', time: Date.now() })
-
       const start = await this.getStart()
 
       const pages = await this.paginateTimeRange(start)
 
       for (let i = 0, len = pages.length; i < len; i++) {
         const page = pages[i]
-        console.log({ page })
+        // console.log({ page })
         // 处理数据
         await this.getStrategys(page.start, page.stop)
       }
@@ -125,6 +123,7 @@ class TimerJob {
       self.postMessage({ method: 'doJobBack', type: 'error', message: error.message })
     } finally {
       this.running = false
+      self.postMessage({ method: 'doJobBack', type: 'heartbeat', time: Date.now() })
     }
   }
 

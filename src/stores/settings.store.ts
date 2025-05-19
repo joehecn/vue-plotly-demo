@@ -2,8 +2,10 @@ import { computed, ref } from 'vue'
 import { defineStore } from 'pinia'
 import { parse } from 'csv-parse/browser/esm/sync'
 import dayjs from 'dayjs'
+import { IndexedDB } from '@/api/indexed_db'
 
 import type { SafeAny } from '@/api/carnot'
+import { csvHeader } from '@/config'
 
 export type ChartDataRow = {
   x: string[]
@@ -16,6 +18,8 @@ export const useSettingsStore = defineStore('settings', () => {
   const fromCsv = ref(localStorage.getItem('vue-plotly-demo-from-csv') === 'true')
 
   const isCollapse = ref(localStorage.getItem('vue-plotly-demo-is-collapse') === 'true')
+
+  const lastStrategyRow = ref<{ requestTime: number; time: number; row: SafeAny } | null>(null)
 
   const setIsCollapse = (collapse: boolean) => {
     localStorage.setItem('vue-plotly-demo-is-collapse', String(collapse))
@@ -31,6 +35,14 @@ export const useSettingsStore = defineStore('settings', () => {
 
   const _csv = ref(localStorage.getItem('vue-plotly-demo-csv') ?? '')
 
+  const _getRecords = (content: string) => {
+    const records = parse(content, {
+      columns: true,
+      skip_empty_lines: true,
+    })
+    return records
+  }
+
   const getCsv = () => _csv.value
   const setCsv = (content: string) => {
     localStorage.setItem('vue-plotly-demo-csv', content)
@@ -43,10 +55,7 @@ export const useSettingsStore = defineStore('settings', () => {
       return []
     }
 
-    const records = parse(content, {
-      columns: true,
-      skip_empty_lines: true,
-    })
+    const records = _getRecords(content)
     return records
   })
 
@@ -606,11 +615,29 @@ export const useSettingsStore = defineStore('settings', () => {
   const getMegaData = (method: string, [startTime, endTime]: string[]) => {
     return dataMap.get(method)?.([startTime, endTime]) ?? []
   }
+
+  const handleUploadCsvFromIndexedDB = async (requestTime = Date.now()) => {
+    let rows = await IndexedDB.getAll()
+    rows = rows.sort((a, b) => b.time - a.time)
+
+    if (rows.length) {
+      const lastRow = rows[0]
+      const { time, row } = lastRow
+
+      const content = [csvHeader, row].join('\n')
+      const records = _getRecords(content)
+      lastStrategyRow.value = { time, row: records[0], requestTime: Math.floor(requestTime / 1000) }
+    }
+    // if (lastRow)
+
+    const csv = rows.map((item) => item.row)
+    setCsv([csvHeader, ...csv].join('\n'))
+  }
+
   return {
     fromCsv,
-
     isCollapse,
-    // getIsCollapse,
+    lastStrategyRow,
     setIsCollapse,
     getCarnotToken,
     setCarnotToken,
@@ -621,7 +648,8 @@ export const useSettingsStore = defineStore('settings', () => {
     recordMap,
     datetimerange,
     heads,
-    // filterChillerData,
+
     getMegaData,
+    handleUploadCsvFromIndexedDB,
   }
 })

@@ -89,8 +89,15 @@ const handleRemoveCsv = () => {
   <!-- <div style="height: 332px;"> -->
   <h2>CSV 文件</h2>
   <div style="height: 242px">
-    <el-upload ref="upload" drag accept="text/csv" :auto-upload="false" :limit="1" :on-exceed="handleExceed"
-      :on-change="handleChange">
+    <el-upload
+      ref="upload"
+      drag
+      accept="text/csv"
+      :auto-upload="false"
+      :limit="1"
+      :on-exceed="handleExceed"
+      :on-change="handleChange"
+    >
       <el-icon class="el-icon--upload"><upload-filled /></el-icon>
       <div class="el-upload__text">Drop .csv file here or <em>click to upload</em></div>
       <template #tip>

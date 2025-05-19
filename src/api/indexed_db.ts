@@ -156,10 +156,7 @@ export class IndexedDB {
 
   static async getAll(): Promise<Strategy[]> {
     return this.execute((db) => {
-      return db
-        .transaction(STORE_NAME)
-        .objectStore(STORE_NAME)
-        .getAll()
+      return db.transaction(STORE_NAME).objectStore(STORE_NAME).getAll()
     })
   }
 }

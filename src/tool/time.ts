@@ -19,9 +19,10 @@ export const isoToLocalFormat = (isoString: string, timeZone = 'Asia/Shanghai') 
 
   // 使用 formatToParts 获取时间组件
   const timeParts = timeFormatter.formatToParts(date)
-  let hour = '', minute = ''
+  let hour = '',
+    minute = ''
 
-  timeParts.forEach(part => {
+  timeParts.forEach((part) => {
     if (part.type === 'hour') hour = parseInt(part.value).toString()
     if (part.type === 'minute') minute = part.value.padStart(2, '0')
   })
@@ -32,7 +33,8 @@ export const isoToLocalFormat = (isoString: string, timeZone = 'Asia/Shanghai') 
   }
 }
 
-// // 使用示例
-// const utcTime = '2025-05-16T118:30:00Z';
-// console.log(isoToLocalFormat(utcTime))
-// 5/17/2025 02:30
+export const secondsToTime = (seconds: number) => {
+  const date = new Date(seconds * 1000).toISOString()
+  const local = isoToLocalFormat(date)
+  return local.timestamp
+}
