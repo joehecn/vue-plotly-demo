@@ -323,6 +323,7 @@ onBeforeUnmount(() => {
     <div style="height: 16px"></div>
 
     <el-switch
+      inline-prompt
       v-model="fromCsv"
       :style="{
         '--el-switch-on-color': '#ff4949',
@@ -334,8 +335,9 @@ onBeforeUnmount(() => {
     />
 
     <el-switch
-      style="margin-left: 24px"
       v-if="!fromCsv"
+      style="margin-left: 24px"
+      inline-prompt
       v-model="isPlay"
       active-text="动画播放中..."
       inactive-text="动画已停止"
