@@ -1,0 +1,20 @@
+[
+  {
+    "data": {
+      "DT": "5/20/2025 7:30",
+      "Temperature": 26,
+      "Humidity": 85,
+      "T_wb": 0,
+      "Pred_Q": 1058.4991455078125,
+      "Chiller1": true,
+      "Chiller3": false,
+      "Chiller4": true,
+      "EnteringTemp1": 13.27645,
+      "EnteringTemp3": 13.4431,
+      "EnteringTemp4": 12.943149,
+      "EnteringTemp_CD1": 28.719347,
+      "EnteringTemp_CD3": 28.885998,
+      "EnteringTemp_CD4": 32.663399
+    }
+  }
+]
