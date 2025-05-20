@@ -30,7 +30,7 @@ export const getFirstStrategy = async () => {
   const fluxQuery = `
     from(bucket: "Buckets_saas_test_yin")
       |> range(start: 0)
-      |> filter(fn: (r) => r["_measurement"] == "chiller_strategy" and r["_field"] == "predicted_load")
+      |> filter(fn: (r) => r["_measurement"] == "chiller_strategy_v2" and r["_field"] == "predicted_load")
       |> sort(columns: ["_time"])
       |> first()
   `
@@ -43,7 +43,7 @@ export const getStrategys = async (start: number, stop: number) => {
   const fluxQuery = `
     from(bucket: "Buckets_saas_test_yin")
       |> range(start: ${start}, stop: ${stop})
-      |> filter(fn: (r) => r["_measurement"] == "chiller_strategy")
+      |> filter(fn: (r) => r["_measurement"] == "chiller_strategy_v2")
       |> sort(columns: ["_time"])
   `
 

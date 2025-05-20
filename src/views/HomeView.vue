@@ -1,5 +1,13 @@
 <script setup lang="ts">
-import { onMounted, ref, shallowRef, reactive, nextTick, onBeforeUpdate } from 'vue'
+import {
+  onMounted,
+  ref,
+  shallowRef,
+  reactive,
+  nextTick,
+  onBeforeUpdate,
+  onBeforeUnmount,
+} from 'vue'
 import { formatBytes } from '@/tool/format_bytes'
 import FromCsv from '@/components/FromCsv.vue'
 import ChillerStrategy from '@/components/ChillerStrategy.vue'
@@ -7,8 +15,21 @@ import { storeToRefs } from 'pinia'
 import { useSettingsStore } from '@/stores/settings.store'
 import { ElMessage } from 'element-plus'
 import { useDebounceFn } from '@vueuse/core'
+import { IndexedDB } from '@/api/indexed_db'
+import emitter from '@/tool/mitt'
 
 import type { SafeAny } from '@/api/carnot'
+
+// Add type declaration for performance.memory
+declare global {
+  interface Performance {
+    memory?: {
+      jsHeapSizeLimit: number
+      totalJSHeapSize: number
+      usedJSHeapSize: number
+    }
+  }
+}
 
 interface TableRow {
   id: string
@@ -20,10 +41,20 @@ interface TableRow {
 const settingsStore = useSettingsStore()
 const { fromCsv } = storeToRefs(settingsStore)
 
+const isPlay = ref(false)
+let zero = 0 // 用于存储时间戳
+let rafId = 0 // 动画帧ID
+
 // 存储配额状态
 const storageInfo = reactive({
   usage: '0 B',
   quota: '0 B',
+})
+// 在组件中新增内存信息响应式对象
+const memoryInfo = reactive({
+  jsHeapSizeLimit: '0 B',
+  totalJSHeapSize: '0 B',
+  usedJSHeapSize: '0 B',
 })
 
 // 表格相关
@@ -35,9 +66,36 @@ const currentIndex = ref(-1)
 const tableContainer = ref<HTMLElement | null>(null)
 const tableRef = ref<SafeAny>(null)
 const selectedRow = ref<TableRow | null>(null)
+const request = ref<SafeAny[]>([])
+
+const translateField = (field: string) => {
+  const fieldMap = new Map([
+    ['Chiller1', 'CH1 上次启停状态'],
+    ['Chiller3', 'CH3 上次启停状态'],
+    ['Chiller4', 'CH4 上次启停状态'],
+    ['EnteringTemp1', 'CH1 冷冻水回水温度(°C)'],
+    ['EnteringTemp3', 'CH3 冷冻水回水温度(°C)'],
+    ['EnteringTemp4', 'CH4 冷冻水回水温度(°C)'],
+    ['EnteringTemp_CD1', 'CH1 冷凝水回水温度(°C)'],
+    ['EnteringTemp_CD3', 'CH3 冷凝水回水温度(°C)'],
+    ['EnteringTemp_CD4', 'CH4 冷凝水回水温度(°C)'],
+    ['Pred_Q', '冷量预测(kW)'],
+    ['Humidity', '实时湿度(%)'],
+    ['Temperature', '实时温度(°C)'],
+  ])
+  return fieldMap.get(field) || field
+}
+
+const transitionValue = (field: string, value: number) => {
+  if (field === 'Chiller1' || field === 'Chiller3' || field === 'Chiller4') {
+    return value ? '开机' : '关机'
+  }
+  return value.toFixed(2)
+}
 
 // 防抖处理（100ms）
 const debouncedScroll = useDebounceFn((index: number) => {
+  if (!index) return
   tableRef.value?.scrollToRow(index, 'start')
 }, 100)
 
@@ -105,7 +163,7 @@ const scrollToCurrentRow = () => {
 }
 
 // 改进的行选择逻辑（带循环）
-const handleRowSelection = (newIndex: number) => {
+const handleRowSelection = async (newIndex: number) => {
   if (fromCsv.value) return
 
   // 边界处理（循环）
@@ -114,6 +172,14 @@ const handleRowSelection = (newIndex: number) => {
 
   currentIndex.value = newIndex
   selectedRow.value = data.value[newIndex] || null
+
+  // 查找 request
+  if (selectedRow.value) {
+    const time = Math.floor(new Date(selectedRow.value['时间戳']).getTime() / 1000)
+    const row = await IndexedDB.getByTime(time)
+    request.value = row?.request ? JSON.parse(row.request) : []
+  }
+
   scrollToCurrentRow()
 }
 
@@ -140,11 +206,11 @@ const handleKeyDown = useDebounceFn((e: KeyboardEvent) => {
 
 // CSV切换处理
 const handleFromCsvChange = async (value: boolean) => {
+  isPlay.value = false
+
   try {
     if (value) {
       settingsStore.setCsv('')
-    } else {
-      await settingsStore.handleUploadCsvFromIndexedDB()
     }
 
     localStorage.setItem('vue-plotly-demo-from-csv', String(value))
@@ -159,16 +225,59 @@ const handleFromCsvChange = async (value: boolean) => {
   }
 }
 
-// 生命周期
-onMounted(async () => {
+const handleHeartbeat = () => {
+  if (!fromCsv.value) {
+    ElMessage.success('自动更新数据成功')
+
+    refreshTable()
+
+    // console.log('自动更新数据成功')
+  }
+}
+
+const firstPlayStep = (timeStamp: number) => {
+  zero = timeStamp
+  playStep(timeStamp)
+}
+
+const playStep = (timeStamp: number) => {
+  // console.log({ zero, timeStamp })
+  if (timeStamp - zero > 3000) {
+    if (!FromCsv.value && isPlay.value) {
+      handleRowSelection(currentIndex.value - 1)
+    }
+
+    getSystemInfo()
+
+    zero = timeStamp
+  }
+
+  rafId = requestAnimationFrame(playStep)
+}
+
+// 获取系统信息
+const getSystemInfo = async () => {
   // 获取存储信息
   try {
     const estimate = await navigator.storage.estimate()
     storageInfo.usage = formatBytes(estimate.usage ?? 0)
     storageInfo.quota = formatBytes(estimate.quota ?? 0)
+
+    if (performance.memory) {
+      memoryInfo.jsHeapSizeLimit = formatBytes(performance.memory.jsHeapSizeLimit)
+      memoryInfo.totalJSHeapSize = formatBytes(performance.memory.totalJSHeapSize)
+      memoryInfo.usedJSHeapSize = formatBytes(performance.memory.usedJSHeapSize)
+    }
   } catch (error) {
     console.error('Storage estimate failed:', error)
   }
+}
+
+// 生命周期
+onMounted(async () => {
+  rafId = requestAnimationFrame(firstPlayStep)
+
+  emitter.on('heartbeat', handleHeartbeat)
 
   nextTick(() => {
     refreshTable()
@@ -181,15 +290,38 @@ onBeforeUpdate(() => {
     tableContainer.value?.focus({ preventScroll: true })
   })
 })
+
+onBeforeUnmount(() => {
+  cancelAnimationFrame(rafId)
+
+  emitter.off('heartbeat', handleHeartbeat)
+})
 </script>
 
 <template>
-  <div class="storage-info">
+  <div v-if="!fromCsv" class="request-wrapper">
+    <div class="request-title">生成本次策略的条件</div>
+    <div v-for="r in request" :key="r._field">
+      <span class="request-field">{{ translateField(r._field) }}</span>
+      <span class="request-value">{{ transitionValue(r._field, r._value) }}</span>
+    </div>
+  </div>
+
+  <div class="system-info">
     <span>已用空间: {{ storageInfo.usage }} / 总配额: {{ storageInfo.quota }}</span>
+    <template v-if="memoryInfo.jsHeapSizeLimit !== '0 B'">
+      <span
+        >JS堆限制: {{ memoryInfo.jsHeapSizeLimit }} / 已用堆内存: {{ memoryInfo.usedJSHeapSize }} /
+        总堆内存: {{ memoryInfo.totalJSHeapSize }}</span
+      >
+    </template>
   </div>
 
   <div class="data-source">
     <h2>配置数据来源</h2>
+
+    <div style="height: 16px"></div>
+
     <el-switch
       v-model="fromCsv"
       :style="{
@@ -199,6 +331,14 @@ onBeforeUpdate(() => {
       active-text="从 CSV 文件"
       inactive-text="从 AI 策略"
       @change="handleFromCsvChange"
+    />
+
+    <el-switch
+      style="margin-left: 24px"
+      v-if="!fromCsv"
+      v-model="isPlay"
+      active-text="动画播放中..."
+      inactive-text="动画已停止"
     />
   </div>
 
@@ -238,9 +378,41 @@ onBeforeUpdate(() => {
 </template>
 
 <style>
-.storage-info {
-  margin-bottom: 1rem;
+.request-title {
+  margin: 4px 0 4px 0;
+  font-weight: 500;
+  font-size: 12px;
+}
+
+.request-wrapper {
+  position: fixed;
+  top: 0;
+  right: 0;
+  color: #999;
+  font-weight: 300;
+  font-size: 12px;
+}
+
+.request-field {
+  display: inline-block;
+  width: 160px;
+}
+
+.request-value {
+  display: inline-block;
+  width: 80px;
+}
+
+.system-info {
+  position: fixed;
+  top: 4px;
+  /* margin-bottom: 1rem; */
   color: var(--el-text-color-secondary);
+  font-size: 12px;
+}
+
+.system-info span {
+  margin-right: 1.5rem;
 }
 
 .data-source {

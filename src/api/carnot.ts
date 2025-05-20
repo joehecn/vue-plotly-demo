@@ -477,7 +477,7 @@ export const loginCarnot = async () => {
     })
 
     const data = await response.json()
-    console.log({ data })
+    // console.log({ data })
 
     if (data.message) throw new Error(data.message)
 

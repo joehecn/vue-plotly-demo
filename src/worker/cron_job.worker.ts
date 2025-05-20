@@ -82,7 +82,6 @@ class TimerJob {
 
   private static async getStrategys(start: number, stop: number) {
     const result = await getStrategys(start, stop)
-    console.log({ result })
 
     const timeMap = new Map<string, FluxRow[]>()
     result.forEach((item: FluxRow) => {
@@ -94,19 +93,15 @@ class TimerJob {
     })
 
     const timeMapEntries = Array.from(timeMap.entries())
-    console.log({ timeMapEntries })
-    console.log(timeMapEntries.length)
-    let i = 0
+
     const strategies = timeMapEntries.map(([key, value]) => {
-      console.log(i++)
-      console.log({ key, value })
-      const { key: time, json } = fluxToJson(key, value)
+      const { key: time, json, request } = fluxToJson(key, value)
       const row = jsonToCsvRow(json)
-      return { time, row }
+      return { time, row, request: JSON.stringify(request) }
     })
 
     // 保存数据到 indexedDB
-    console.log({ strategies })
+    // console.log({ strategies })
     await WorkerDB.batchUpsert(strategies)
   }
 

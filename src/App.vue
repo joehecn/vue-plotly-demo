@@ -5,6 +5,8 @@ import { useSettingsStore } from './stores/settings.store'
 import { getCurrentUser, loginCarnot } from './api/carnot'
 import CronJobWorker from '@/worker/cron_job.worker?worker'
 
+import emitter from '@/tool/mitt'
+
 const route = useRoute()
 const settingsStore = useSettingsStore()
 
@@ -13,7 +15,9 @@ const worker = new CronJobWorker()
 worker.onmessage = async (event) => {
   if (event.data.type === 'heartbeat') {
     if (!settingsStore.fromCsv) {
-      await settingsStore.handleUploadCsvFromIndexedDB() // event.data.time
+      // await settingsStore.handleUploadCsvFromIndexedDB() // event.data.time
+      // 通知
+      emitter.emit('heartbeat')
     }
   }
 }
@@ -36,7 +40,6 @@ onMounted(async () => {
   worker.postMessage({ method: 'start' })
 
   const user = await getCurrentUser()
-  // console.log({ user })
 
   if (!user) {
     await loginCarnot()

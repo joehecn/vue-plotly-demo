@@ -90,10 +90,6 @@ const filterValues = (arr: SafeAny[], nullIndexs: number[]) => {
 }
 
 export const fluxToJson = (key: string, value: FluxRow[]) => {
-  if (key === '2025-05-20T02:30:00Z') {
-    console.log({ key })
-  }
-
   const { start, timestamp } = isoToLocalFormat(key)
 
   const data = {
@@ -153,6 +149,7 @@ export const fluxToJson = (key: string, value: FluxRow[]) => {
       // chiller_power 机组能耗(kW) 之和
       total_energy: null,
     },
+    request: [],
   }
 
   // 解析数据
@@ -160,12 +157,15 @@ export const fluxToJson = (key: string, value: FluxRow[]) => {
     const { device, _field, _value } = value[i]
     if (device === 'system') {
       // 处理系统数据
-      ; (data.json as Record<string, SafeAny>)[_field] = _value
+      ;(data.json as Record<string, SafeAny>)[_field] = _value
       continue
     }
 
     // todo: 处理 request 数据
-    if (device === 'request') continue
+    if (device === 'request') {
+      ;(data.request as SafeAny[]).push({ _field, _value })
+      continue
+    }
 
     const configPath = DEVICE_CONFIG[device][_field]
     // console.log({ device, _field, configPath })

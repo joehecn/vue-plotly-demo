@@ -37,7 +37,7 @@ const data = ref<SafeAny[]>([])
 // }
 
 const handleExceed: UploadProps['onExceed'] = (files) => {
-  console.log('[joe] onExceed', files)
+  // console.log('[joe] onExceed', files)
   upload.value!.clearFiles()
   const file = files[0] as UploadRawFile
   file.uid = genFileId()
@@ -68,7 +68,6 @@ const handleChange: UploadProps['onChange'] = (file) => {
           }
           settingsStore.setCsv(content)
 
-          // refreshTable()
           emit('change')
         },
       )
@@ -80,7 +79,6 @@ const handleRemoveCsv = () => {
   upload.value!.clearFiles()
   settingsStore.setCsv('')
 
-  // refreshTable()
   emit('change')
 }
 </script>

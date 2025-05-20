@@ -36,10 +36,10 @@ defineProps<{
     {{ cc.loadingRate ? `负载: ${cc.loadingRate}%` : '' }}
   </text>
   <text :x="cc.cx + 32" :y="cc.cy - 8" fill="#13ce66" font-size="12" font-family="Arial">
-    {{ cc.frequency ? `频率: ${cc.frequency}hZ` : '' }}
+    {{ cc.frequency ? `频率: ${cc.frequency}Hz` : '' }}
   </text>
   <text :x="cc.cx + 32" :y="cc.cy - 8" fill="#13ce66" font-size="12" font-family="Arial">
-    {{ cc.speed ? `频率: ${cc.speed}hZ` : '' }}
+    {{ cc.speed ? `频率: ${cc.speed}Hz` : '' }}
   </text>
 
   <text

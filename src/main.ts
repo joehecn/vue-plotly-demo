@@ -1,4 +1,5 @@
 import 'element-plus/theme-chalk/src/notification.scss'
+import 'element-plus/theme-chalk/src/message.scss'
 import './assets/main.css'
 
 import * as ElementPlusIconsVue from '@element-plus/icons-vue'

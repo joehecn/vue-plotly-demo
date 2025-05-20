@@ -2,12 +2,13 @@
 export interface Strategy {
   time: number // 主键字段（时间戳）
   row: string // 其他策略字段
+  request: string // 请求参数
 }
 
 type DBOperation<T> = (db: IDBDatabase) => IDBRequest<T>
 
-const DB_NAME = 'vpdDB'
-const STORE_NAME = 'strategys'
+const DB_NAME = 'vpdDBV2'
+const STORE_NAME = 'strategys_v2'
 const DB_VERSION = 1
 
 export class IndexedDB {
@@ -119,6 +120,12 @@ export class IndexedDB {
         .index('time_idx')
         .openCursor(null, 'prev')
     }).then((cursor) => cursor?.value || null)
+  }
+
+  static async getByTime(time: number): Promise<Strategy | null> {
+    return this.execute((db) => {
+      return db.transaction(STORE_NAME).objectStore(STORE_NAME).get(time)
+    })
   }
 
   static async queryByTimeRange(start: number, end: number): Promise<Strategy[]> {
