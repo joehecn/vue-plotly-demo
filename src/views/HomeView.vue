@@ -300,7 +300,12 @@ onBeforeUnmount(() => {
 
 <template>
   <div v-if="!fromCsv" class="request-wrapper">
-    <div class="request-title">生成本次策略的条件</div>
+    <div v-if="request.length" class="request-title">
+      系统实时状态
+      <span style="font-weight: 400;">
+        {{ selectedRow!['时间戳'] }}
+      </span>
+    </div>
     <div v-for="r in request" :key="r._field">
       <span class="request-field">{{ translateField(r._field) }}</span>
       <span class="request-value">{{ transitionValue(r._field, r._value) }}</span>
@@ -310,10 +315,8 @@ onBeforeUnmount(() => {
   <div class="system-info">
     <span>已用空间: {{ storageInfo.usage }} / 总配额: {{ storageInfo.quota }}</span>
     <template v-if="memoryInfo.jsHeapSizeLimit !== '0 B'">
-      <span
-        >JS堆限制: {{ memoryInfo.jsHeapSizeLimit }} / 已用堆内存: {{ memoryInfo.usedJSHeapSize }} /
-        总堆内存: {{ memoryInfo.totalJSHeapSize }}</span
-      >
+      <span>JS堆限制: {{ memoryInfo.jsHeapSizeLimit }} / 已用堆内存: {{ memoryInfo.usedJSHeapSize }} /
+        总堆内存: {{ memoryInfo.totalJSHeapSize }}</span>
     </template>
   </div>
 
@@ -322,52 +325,24 @@ onBeforeUnmount(() => {
 
     <div style="height: 16px"></div>
 
-    <el-switch
-      inline-prompt
-      v-model="fromCsv"
-      :style="{
-        '--el-switch-on-color': '#ff4949',
-        '--el-switch-off-color': '#13ce66',
-      }"
-      active-text="从 CSV 文件"
-      inactive-text="从 AI 策略"
-      @change="handleFromCsvChange"
-    />
+    <el-switch inline-prompt v-model="fromCsv" :style="{
+      '--el-switch-on-color': '#ff4949',
+      '--el-switch-off-color': '#13ce66',
+    }" active-text="从 CSV 文件" inactive-text="从 AI 策略" @change="handleFromCsvChange" />
 
-    <el-switch
-      v-if="!fromCsv"
-      style="margin-left: 24px"
-      inline-prompt
-      v-model="isPlay"
-      active-text="动画播放中..."
-      inactive-text="动画已停止"
-    />
+    <el-switch v-if="!fromCsv" style="margin-left: 24px" inline-prompt v-model="isPlay" active-text="动画播放中..."
+      inactive-text="动画已停止" />
   </div>
 
   <FromCsv v-if="fromCsv" @change="refreshTable" />
   <ChillerStrategy v-else :selected-row="selectedRow" />
 
-  <div
-    ref="tableContainer"
-    tabindex="0"
-    class="virtual-table-container"
-    @keydown="handleKeyDown"
-    style="height: 400px"
-  >
+  <div ref="tableContainer" tabindex="0" class="virtual-table-container" @keydown="handleKeyDown" style="height: 400px">
     <el-auto-resizer>
       <template #default="{ height, width }">
-        <el-table-v2
-          ref="tableRef"
-          :columns="columns"
-          :data="data"
-          :width="width"
-          :height="height"
-          :estimated-row-height="40"
-          :buffer-size="20"
-          :row-class="getRowClass"
-          :row-event-handlers="{ onClick: unifiedEventHandlers.click }"
-          fixed
-        >
+        <el-table-v2 ref="tableRef" :columns="columns" :data="data" :width="width" :height="height"
+          :estimated-row-height="40" :buffer-size="20" :row-class="getRowClass"
+          :row-event-handlers="{ onClick: unifiedEventHandlers.click }" fixed>
           <template #empty>
             <div class="empty-table">
               <el-empty description="暂无数据" />
