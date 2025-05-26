@@ -68,21 +68,26 @@ const tableRef = ref<SafeAny>(null)
 const selectedRow = ref<TableRow | null>(null)
 const request = ref<SafeAny[]>([])
 
+const fieldMap = new Map([
+  ['Chiller1', 'CH1 上次启停状态'],
+  ['Chiller3', 'CH3 上次启停状态'],
+  ['Chiller4', 'CH4 上次启停状态'],
+  ['SupplyTemp1', 'CH1 冷冻水供水温度(°C)'],
+  ['SupplyTemp3', 'CH3 冷冻水供水温度(°C)'],
+  ['SupplyTemp4', 'CH4 冷冻水供水温度(°C)'],
+  ['EnteringTemp1', 'CH1 冷冻水回水温度(°C)'],
+  ['EnteringTemp3', 'CH3 冷冻水回水温度(°C)'],
+  ['EnteringTemp4', 'CH4 冷冻水回水温度(°C)'],
+  ['EnteringTemp_CD1', 'CH1 冷凝水回水温度(°C)'],
+  ['EnteringTemp_CD3', 'CH3 冷凝水回水温度(°C)'],
+  ['EnteringTemp_CD4', 'CH4 冷凝水回水温度(°C)'],
+  ['Pred_Q', '冷量预测(kW)'],
+  ['Humidity', '实时湿度(%)'],
+  ['Temperature', '实时温度(°C)'],
+])
+const fieldKeys = Array.from(fieldMap.keys())
+
 const translateField = (field: string) => {
-  const fieldMap = new Map([
-    ['Chiller1', 'CH1 上次启停状态'],
-    ['Chiller3', 'CH3 上次启停状态'],
-    ['Chiller4', 'CH4 上次启停状态'],
-    ['EnteringTemp1', 'CH1 冷冻水回水温度(°C)'],
-    ['EnteringTemp3', 'CH3 冷冻水回水温度(°C)'],
-    ['EnteringTemp4', 'CH4 冷冻水回水温度(°C)'],
-    ['EnteringTemp_CD1', 'CH1 冷凝水回水温度(°C)'],
-    ['EnteringTemp_CD3', 'CH3 冷凝水回水温度(°C)'],
-    ['EnteringTemp_CD4', 'CH4 冷凝水回水温度(°C)'],
-    ['Pred_Q', '冷量预测(kW)'],
-    ['Humidity', '实时湿度(%)'],
-    ['Temperature', '实时温度(°C)'],
-  ])
   return fieldMap.get(field) || field
 }
 
@@ -177,7 +182,15 @@ const handleRowSelection = async (newIndex: number) => {
   if (selectedRow.value) {
     const time = Math.floor(new Date(selectedRow.value['时间戳']).getTime() / 1000)
     const row = await IndexedDB.getByTime(time)
-    request.value = row?.request ? JSON.parse(row.request) : []
+    const _request = row?.request ? JSON.parse(row.request) : []
+
+    request.value = fieldKeys.map((key) => {
+      const value = _request.find((r: SafeAny) => r._field === key)
+      return {
+        _field: key,
+        _value: value ? value._value : 0,
+      }
+    })
   }
 
   scrollToCurrentRow()
@@ -306,10 +319,12 @@ onBeforeUnmount(() => {
         {{ selectedRow!['时间戳'] }}
       </span>
     </div>
+    <!-- <div style="max-height: 186px; overflow-y: auto;"> -->
     <div v-for="r in request" :key="r._field">
       <span class="request-field">{{ translateField(r._field) }}</span>
       <span class="request-value">{{ transitionValue(r._field, r._value) }}</span>
     </div>
+    <!-- </div> -->
   </div>
 
   <div class="system-info">
