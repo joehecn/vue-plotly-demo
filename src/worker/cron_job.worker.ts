@@ -11,7 +11,7 @@ export type FluxRow = {
   device: string
   _field: string
   _measurement: string
-  _value: number
+  _value: number | string
 }
 
 class WorkerDB extends IndexedDB {
@@ -82,6 +82,7 @@ class TimerJob {
 
   private static async getStrategys(start: number, stop: number) {
     const result = await getStrategys(start, stop)
+    // console.log(`获取 ${result.length} 条数据，时间范围：${start} - ${stop}`)
 
     const timeMap = new Map<string, FluxRow[]>()
     result.forEach((item: FluxRow) => {
@@ -93,11 +94,12 @@ class TimerJob {
     })
 
     const timeMapEntries = Array.from(timeMap.entries())
+    // console.log(`分组后数据条数：${timeMapEntries.length}`)
 
     const strategies = timeMapEntries.map(([key, value]) => {
-      const { key: time, json, request } = fluxToJson(key, value)
+      const { key: time, json, request, mqtt } = fluxToJson(key, value)
       const row = jsonToCsvRow(json)
-      return { time, row, request: JSON.stringify(request) }
+      return { time, row, request: JSON.stringify(request), mqtt: JSON.stringify(mqtt) }
     })
 
     // 保存数据到 indexedDB

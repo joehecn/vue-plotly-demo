@@ -45,6 +45,8 @@ const isPlay = ref(false)
 let zero = 0 // 用于存储时间戳
 let rafId = 0 // 动画帧ID
 
+const isOpen = ref(false) // 是否显示 MQTT 控制指令
+
 // 存储配额状态
 const storageInfo = reactive({
   usage: '0 B',
@@ -67,6 +69,7 @@ const tableContainer = ref<HTMLElement | null>(null)
 const tableRef = ref<SafeAny>(null)
 const selectedRow = ref<TableRow | null>(null)
 const request = ref<SafeAny[]>([])
+const mqtt = ref<SafeAny[]>([])
 
 const fieldMap = new Map([
   ['Chiller1', 'CH1 上次启停状态'],
@@ -178,11 +181,12 @@ const handleRowSelection = async (newIndex: number) => {
   currentIndex.value = newIndex
   selectedRow.value = data.value[newIndex] || null
 
-  // 查找 request
+  // 查找 request 和 mqtt
   if (selectedRow.value) {
     const time = Math.floor(new Date(selectedRow.value['时间戳']).getTime() / 1000)
     const row = await IndexedDB.getByTime(time)
     const _request = row?.request ? JSON.parse(row.request) : []
+    // const _mqtt = row?.mqtt ? JSON.parse(row.mqtt) : []
 
     request.value = fieldKeys.map((key) => {
       const value = _request.find((r: SafeAny) => r._field === key)
@@ -191,6 +195,8 @@ const handleRowSelection = async (newIndex: number) => {
         _value: value ? value._value : 0,
       }
     })
+
+    mqtt.value = row?.mqtt ? JSON.parse(row.mqtt) : []
   }
 
   scrollToCurrentRow()
@@ -347,6 +353,9 @@ onBeforeUnmount(() => {
 
     <el-switch v-if="!fromCsv" style="margin-left: 24px" inline-prompt v-model="isPlay" active-text="动画播放中..."
       inactive-text="动画已停止" />
+
+    <el-switch v-if="!fromCsv" style="margin-left: 24px" inline-prompt v-model="isOpen" active-text="显示 MQTT 控制指令"
+      inactive-text="隐藏 MQTT 控制指令" />
   </div>
 
   <FromCsv v-if="fromCsv" @change="refreshTable" />
@@ -367,6 +376,10 @@ onBeforeUnmount(() => {
       </template>
     </el-auto-resizer>
   </div>
+
+  <el-drawer v-model="isOpen" direction="ltr" :modal="false" :size="320" class="mqtt-drawer" :append-to-body="true">
+    <pre style="font-size: 12px;">{{ mqtt }}</pre>
+  </el-drawer>
 </template>
 
 <style>
@@ -438,5 +451,9 @@ onBeforeUnmount(() => {
   align-items: center;
   justify-content: center;
   height: 100%;
+}
+
+div:has(.mqtt-drawer) {
+  width: 320px;
 }
 </style>

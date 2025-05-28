@@ -3,13 +3,14 @@ export interface Strategy {
   time: number // 主键字段（时间戳）
   row: string // 其他策略字段
   request: string // 请求参数
+  mqtt: string // MQTT 参数
 }
 
 type DBOperation<T> = (db: IDBDatabase) => IDBRequest<T>
 
 const DB_NAME = 'vpdDBV2'
 const STORE_NAME = 'strategys_v2'
-const DB_VERSION = 1
+const DB_VERSION = 2
 
 export class IndexedDB {
   private static instance: IDBDatabase | null = null

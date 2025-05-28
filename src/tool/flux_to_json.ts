@@ -150,6 +150,7 @@ export const fluxToJson = (key: string, value: FluxRow[]) => {
       total_energy: null,
     },
     request: [],
+    mqtt: [],
   }
 
   // 解析数据
@@ -157,13 +158,20 @@ export const fluxToJson = (key: string, value: FluxRow[]) => {
     const { device, _field, _value } = value[i]
     if (device === 'system') {
       // 处理系统数据
-      ;(data.json as Record<string, SafeAny>)[_field] = _value
+      ; (data.json as Record<string, SafeAny>)[_field] = _value
       continue
     }
 
-    // todo: 处理 request 数据
+    // 处理 request 数据
     if (device === 'request') {
-      ;(data.request as SafeAny[]).push({ _field, _value })
+      ; (data.request as SafeAny[]).push({ _field, _value })
+      continue
+    }
+
+    // 处理 mqtt 数据
+    if (device === 'mqtt') {
+      // console.log({ _field, _value })
+      ; (data.mqtt as SafeAny[]) = JSON.parse(_value as string)
       continue
     }
 
