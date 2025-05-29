@@ -94,10 +94,68 @@ const translateField = (field: string) => {
   return fieldMap.get(field) || field
 }
 
+const transitionEnteringTemp = (chillerField: string, supplyTempField: string, value: number) => {
+  const chiller = request.value.find((item: SafeAny) => item._field === chillerField)
+
+  if (chiller?._value) {
+    const temp = request.value.find((item: SafeAny) => item._field === supplyTempField)
+    const diff = value - (temp?._value || 0)
+    const str = `${value.toFixed(2)} - ${(temp?._value || 0).toFixed(2)} = ${diff.toFixed(2)}`
+
+    if (diff > 7) {
+      return { str: `${str} > 7`, cls: 'high-diff' }
+    }
+
+    if (diff < 3) {
+      return { str: `${str} < 3`, cls: 'low-diff' }
+    }
+
+    return { str, cls: 'normal-diff' }
+  }
+
+  return { str: value.toFixed(2), cls: '' }
+}
+
+const getRequestRowClass = (field: string, value: number) => {
+  if (field === 'EnteringTemp1') {
+    const { cls } = transitionEnteringTemp('Chiller1', 'SupplyTemp1', value)
+    return cls
+  }
+
+  if (field === 'EnteringTemp3') {
+    const { cls } = transitionEnteringTemp('Chiller3', 'SupplyTemp3', value)
+    return cls
+  }
+
+  if (field === 'EnteringTemp4') {
+    const { cls } = transitionEnteringTemp('Chiller4', 'SupplyTemp4', value)
+    return cls
+  }
+
+  return ''
+}
+
+// const _transitionValue
 const transitionValue = (field: string, value: number) => {
   if (field === 'Chiller1' || field === 'Chiller3' || field === 'Chiller4') {
     return value ? '开机' : '关机'
   }
+
+  if (field === 'EnteringTemp1') {
+    const { str } = transitionEnteringTemp('Chiller1', 'SupplyTemp1', value)
+    return str
+  }
+
+  if (field === 'EnteringTemp3') {
+    const { str } = transitionEnteringTemp('Chiller3', 'SupplyTemp3', value)
+    return str
+  }
+
+  if (field === 'EnteringTemp4') {
+    const { str } = transitionEnteringTemp('Chiller4', 'SupplyTemp4', value)
+    return str
+  }
+
   return value.toFixed(2)
 }
 
@@ -326,7 +384,7 @@ onBeforeUnmount(() => {
       </span>
     </div>
     <!-- <div style="max-height: 186px; overflow-y: auto;"> -->
-    <div v-for="r in request" :key="r._field">
+    <div v-for="r in request" :key="r._field" :class="getRequestRowClass(r._field, r._value)">
       <span class="request-field">{{ translateField(r._field) }}</span>
       <span class="request-value">{{ transitionValue(r._field, r._value) }}</span>
     </div>
@@ -398,6 +456,18 @@ onBeforeUnmount(() => {
   font-size: 12px;
 }
 
+.normal-diff {
+  color: var(--el-color-success);
+}
+
+.high-diff {
+  color: var(--el-color-danger);
+}
+
+.low-diff {
+  color: var(--el-color-primary);
+}
+
 .request-field {
   display: inline-block;
   width: 160px;
@@ -405,7 +475,7 @@ onBeforeUnmount(() => {
 
 .request-value {
   display: inline-block;
-  width: 80px;
+  width: 160px;
 }
 
 .system-info {
