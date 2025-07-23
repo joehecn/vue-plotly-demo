@@ -1,11 +1,19 @@
 <script setup lang="ts">
-import { computed, onBeforeUnmount, onMounted, ref, watch } from 'vue'
+import { computed, onBeforeUnmount, onMounted, ref, unref, watch } from 'vue'
 import { useRoute, RouterView } from 'vue-router'
 import { useSettingsStore } from './stores/settings.store'
 import { getCurrentUser, loginCarnot } from './api/carnot'
 import CronJobWorker from '@/worker/cron_job.worker?worker'
 
 import emitter from '@/tool/mitt'
+
+import { ClickOutside as vClickOutside } from 'element-plus'
+
+const buttonRef = ref()
+const popoverRef = ref()
+const onClickOutside = () => {
+  unref(popoverRef).popperRef?.delayHide?.()
+}
 
 const route = useRoute()
 const settingsStore = useSettingsStore()
@@ -130,11 +138,46 @@ onBeforeUnmount(() => {
       <RouterView />
     </el-main>
   </el-container>
+
+  <div class="affix-container">
+    <el-affix position="bottom" :offset="20">
+      <el-button ref="buttonRef" type="primary" circle v-click-outside="onClickOutside">
+        <template #icon>
+          <ChatDotSquare />
+        </template>
+      </el-button>
+    </el-affix>
+  </div>
+
+  <el-popover
+    ref="popoverRef"
+    :virtual-ref="buttonRef"
+    trigger="click"
+    virtual-triggering
+    placement="top-end"
+    width="600"
+  >
+    <iframe
+      src="http://47.242.32.120:8124/chatbot/nkBiipCZ6ckLlHZa"
+      style="width: 100%; height: 100%; min-height: 600px"
+      frameborder="0"
+      allow="microphone"
+    >
+    </iframe>
+  </el-popover>
 </template>
 
 <style scoped>
 .toggle-btn {
   padding-left: 24px;
   cursor: pointer;
+}
+
+.affix-container {
+  text-align: end;
+  padding-right: 18px;
+  /* height: 400px;
+  border-radius: 4px;
+  background: var(--el-color-primary-light-9); */
 }
 </style>

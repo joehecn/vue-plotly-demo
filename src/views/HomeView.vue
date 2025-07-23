@@ -379,7 +379,7 @@ onBeforeUnmount(() => {
   <div v-if="!fromCsv" class="request-wrapper">
     <div v-if="request.length" class="request-title">
       系统实时状态
-      <span style="font-weight: 400;">
+      <span style="font-weight: 400">
         {{ selectedRow!['时间戳'] }}
       </span>
     </div>
@@ -394,8 +394,10 @@ onBeforeUnmount(() => {
   <div class="system-info">
     <span>已用空间: {{ storageInfo.usage }} / 总配额: {{ storageInfo.quota }}</span>
     <template v-if="memoryInfo.jsHeapSizeLimit !== '0 B'">
-      <span>JS堆限制: {{ memoryInfo.jsHeapSizeLimit }} / 已用堆内存: {{ memoryInfo.usedJSHeapSize }} /
-        总堆内存: {{ memoryInfo.totalJSHeapSize }}</span>
+      <span
+        >JS堆限制: {{ memoryInfo.jsHeapSizeLimit }} / 已用堆内存: {{ memoryInfo.usedJSHeapSize }} /
+        总堆内存: {{ memoryInfo.totalJSHeapSize }}</span
+      >
     </template>
   </div>
 
@@ -404,27 +406,61 @@ onBeforeUnmount(() => {
 
     <div style="height: 16px"></div>
 
-    <el-switch inline-prompt v-model="fromCsv" :style="{
-      '--el-switch-on-color': '#ff4949',
-      '--el-switch-off-color': '#13ce66',
-    }" active-text="从 CSV 文件" inactive-text="从 AI 策略" @change="handleFromCsvChange" />
+    <el-switch
+      inline-prompt
+      v-model="fromCsv"
+      :style="{
+        '--el-switch-on-color': '#ff4949',
+        '--el-switch-off-color': '#13ce66',
+      }"
+      active-text="从 CSV 文件"
+      inactive-text="从 AI 策略"
+      @change="handleFromCsvChange"
+    />
 
-    <el-switch v-if="!fromCsv" style="margin-left: 24px" inline-prompt v-model="isPlay" active-text="动画播放中..."
-      inactive-text="动画已停止" />
+    <el-switch
+      v-if="!fromCsv"
+      style="margin-left: 24px"
+      inline-prompt
+      v-model="isPlay"
+      active-text="动画播放中..."
+      inactive-text="动画已停止"
+    />
 
-    <el-switch v-if="!fromCsv" style="margin-left: 24px" inline-prompt v-model="isOpen" active-text="显示 MQTT 控制指令"
-      inactive-text="隐藏 MQTT 控制指令" />
+    <el-switch
+      v-if="!fromCsv"
+      style="margin-left: 24px"
+      inline-prompt
+      v-model="isOpen"
+      active-text="显示 MQTT 控制指令"
+      inactive-text="隐藏 MQTT 控制指令"
+    />
   </div>
 
   <FromCsv v-if="fromCsv" @change="refreshTable" />
   <ChillerStrategy v-else :selected-row="selectedRow" />
 
-  <div ref="tableContainer" tabindex="0" class="virtual-table-container" @keydown="handleKeyDown" style="height: 400px">
+  <div
+    ref="tableContainer"
+    tabindex="0"
+    class="virtual-table-container"
+    @keydown="handleKeyDown"
+    style="height: 400px"
+  >
     <el-auto-resizer>
       <template #default="{ height, width }">
-        <el-table-v2 ref="tableRef" :columns="columns" :data="data" :width="width" :height="height"
-          :estimated-row-height="40" :buffer-size="20" :row-class="getRowClass"
-          :row-event-handlers="{ onClick: unifiedEventHandlers.click }" fixed>
+        <el-table-v2
+          ref="tableRef"
+          :columns="columns"
+          :data="data"
+          :width="width"
+          :height="height"
+          :estimated-row-height="40"
+          :buffer-size="20"
+          :row-class="getRowClass"
+          :row-event-handlers="{ onClick: unifiedEventHandlers.click }"
+          fixed
+        >
           <template #empty>
             <div class="empty-table">
               <el-empty description="暂无数据" />
@@ -435,8 +471,15 @@ onBeforeUnmount(() => {
     </el-auto-resizer>
   </div>
 
-  <el-drawer v-model="isOpen" direction="ltr" :modal="false" :size="320" class="mqtt-drawer" :append-to-body="true">
-    <pre style="font-size: 12px;">{{ mqtt }}</pre>
+  <el-drawer
+    v-model="isOpen"
+    direction="ltr"
+    :modal="false"
+    :size="320"
+    class="mqtt-drawer"
+    :append-to-body="true"
+  >
+    <pre style="font-size: 12px">{{ mqtt }}</pre>
   </el-drawer>
 </template>
 
