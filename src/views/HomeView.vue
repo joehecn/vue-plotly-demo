@@ -5,7 +5,7 @@ import {
   shallowRef,
   reactive,
   nextTick,
-  onBeforeUpdate,
+  // onBeforeUpdate,
   onBeforeUnmount,
 } from 'vue'
 import { formatBytes } from '@/tool/format_bytes'
@@ -361,12 +361,12 @@ onMounted(async () => {
   })
 })
 
-onBeforeUpdate(() => {
-  // 自动聚焦
-  nextTick(() => {
-    tableContainer.value?.focus({ preventScroll: true })
-  })
-})
+// onBeforeUpdate(() => {
+//   // 自动聚焦
+//   // nextTick(() => {
+//   //   tableContainer.value?.focus({ preventScroll: true })
+//   // })
+// })
 
 onBeforeUnmount(() => {
   cancelAnimationFrame(rafId)

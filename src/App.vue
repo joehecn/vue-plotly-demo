@@ -141,7 +141,7 @@ onBeforeUnmount(() => {
 
   <div class="affix-container">
     <el-affix position="bottom" :offset="20">
-      <el-button ref="buttonRef" type="primary" circle v-click-outside="onClickOutside">
+      <el-button ref="buttonRef" type="success" circle v-click-outside="onClickOutside">
         <template #icon>
           <ChatDotSquare />
         </template>
@@ -155,10 +155,10 @@ onBeforeUnmount(() => {
     trigger="click"
     virtual-triggering
     placement="top-end"
-    width="600"
+    width="666"
   >
     <iframe
-      src="http://47.242.32.120:8124/chatbot/nkBiipCZ6ckLlHZa"
+      src="https://dify-sandbox.cloud-building.com/chatbot/nkBiipCZ6ckLlHZa"
       style="width: 100%; height: 100%; min-height: 600px"
       frameborder="0"
       allow="microphone"
