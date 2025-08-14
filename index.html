@@ -1,13 +1,39 @@
 <!DOCTYPE html>
 <html lang="">
-  <head>
-    <meta charset="UTF-8">
-    <link rel="icon" href="/favicon.ico">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Vite App</title>
-  </head>
-  <body>
-    <div id="app"></div>
-    <script type="module" src="/src/main.ts"></script>
-  </body>
+
+<head>
+  <meta charset="UTF-8">
+  <link rel="icon" href="/favicon.ico">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Vite App</title>
+</head>
+
+<body>
+  <div id="app"></div>
+  <script type="module" src="/src/main.ts"></script>
+</body>
+
+<script>
+  window.difyChatbotConfig = {
+    token: 'nkBiipCZ6ckLlHZa',
+    baseUrl: 'https://dify-sandbox.cloud-building.com',
+    systemVariables: {
+      user_id: '123123',
+      // conversation_id: 'YOU CAN DEFINE CONVERSATION ID HERE, IT MUST BE A VALID UUID',
+    },
+  }
+</script>
+<script src="https://dify-sandbox.cloud-building.com/embed.min.js" id="nkBiipCZ6ckLlHZa" defer>
+</script>
+<style>
+  #dify-chatbot-bubble-button {
+    background-color: #000 !important;
+  }
+
+  #dify-chatbot-bubble-window {
+    width: 24rem !important;
+    height: 40rem !important;
+  }
+</style>
+
 </html>

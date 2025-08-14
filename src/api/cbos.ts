@@ -49,3 +49,14 @@ export const getStrategys = async (start: number, stop: number) => {
 
   return await fetchFluxData(fluxQuery)
 }
+
+export const getRun = async (start: number, stop: number) => {
+  const fluxQuery = `
+    from(bucket: "Buckets_saas_test_yin")
+      |> range(start: ${start}, stop: ${stop})
+      |> filter(fn: (r) => r["_measurement"] == "device_mqttpayload_data_b_Optimization_Mode")
+      |> sort(columns: ["_time"])
+  `
+  console.log(fluxQuery)
+  return await fetchFluxData(fluxQuery)
+}

@@ -18,6 +18,11 @@ const router = createRouter({
     //   component: () => import('../views/AboutView.vue'),
     // },
     {
+      path: '/run',
+      name: 'run',
+      component: () => import('../views/RunView.vue'),
+    },
+    {
       path: '/chiller',
       name: 'chiller',
       component: () => import('../views/ChillerView.vue'),

@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { computed, onBeforeUnmount, onMounted, ref, unref, watch } from 'vue'
+import { computed, onBeforeUnmount, onMounted, ref, watch } from 'vue'
 import { useRoute, RouterView } from 'vue-router'
 import { useSettingsStore } from './stores/settings.store'
 import { getCurrentUser, loginCarnot } from './api/carnot'
@@ -7,13 +7,13 @@ import CronJobWorker from '@/worker/cron_job.worker?worker'
 
 import emitter from '@/tool/mitt'
 
-import { ClickOutside as vClickOutside } from 'element-plus'
+// import { ClickOutside as vClickOutside } from 'element-plus'
 
-const buttonRef = ref()
-const popoverRef = ref()
-const onClickOutside = () => {
-  unref(popoverRef).popperRef?.delayHide?.()
-}
+// const buttonRef = ref()
+// const popoverRef = ref()
+// const onClickOutside = () => {
+//   unref(popoverRef).popperRef?.delayHide?.()
+// }
 
 const route = useRoute()
 const settingsStore = useSettingsStore()
@@ -82,6 +82,13 @@ onBeforeUnmount(() => {
           <template #title>Settings</template>
         </el-menu-item>
 
+        <el-menu-item index="run" route="/run">
+          <el-icon>
+            <VideoPlay />
+          </el-icon>
+          <template #title>Running</template>
+        </el-menu-item>
+
         <el-menu-item index="chiller" route="/chiller">
           <el-icon>
             <money />
@@ -139,7 +146,7 @@ onBeforeUnmount(() => {
     </el-main>
   </el-container>
 
-  <div class="affix-container">
+  <!-- <div class="affix-container">
     <el-affix position="bottom" :offset="20">
       <el-button ref="buttonRef" type="success" circle v-click-outside="onClickOutside">
         <template #icon>
@@ -147,9 +154,9 @@ onBeforeUnmount(() => {
         </template>
       </el-button>
     </el-affix>
-  </div>
+  </div> -->
 
-  <el-popover
+  <!-- <el-popover
     ref="popoverRef"
     :virtual-ref="buttonRef"
     trigger="click"
@@ -164,7 +171,7 @@ onBeforeUnmount(() => {
       allow="microphone"
     >
     </iframe>
-  </el-popover>
+  </el-popover> -->
 </template>
 
 <style scoped>
@@ -173,11 +180,8 @@ onBeforeUnmount(() => {
   cursor: pointer;
 }
 
-.affix-container {
+/* .affix-container {
   text-align: end;
   padding-right: 18px;
-  /* height: 400px;
-  border-radius: 4px;
-  background: var(--el-color-primary-light-9); */
-}
+} */
 </style>
