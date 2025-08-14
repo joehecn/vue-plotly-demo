@@ -57,6 +57,6 @@ export const getRun = async (start: number, stop: number) => {
       |> filter(fn: (r) => r["_measurement"] == "device_mqttpayload_data_b_Optimization_Mode")
       |> sort(columns: ["_time"])
   `
-  console.log(fluxQuery)
+  // console.log(fluxQuery)
   return await fetchFluxData(fluxQuery)
 }
