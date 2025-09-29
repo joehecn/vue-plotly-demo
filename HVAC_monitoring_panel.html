@@ -1,0 +1,1256 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>HVAC监控面板</title>
+    <style>
+        :root {
+            --primary-color: #3498db;
+            --success-color: #2ecc71;
+            --warning-color: #f39c12;
+            --danger-color: #e74c3c;
+            --dark-color: #2c3e50;
+            --light-color: #ecf0f1;
+            --gray-color: #95a5a6;
+        }
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+        
+        body {
+            background-color: #f5f7fa;
+            color: #333;
+            padding: 20px;
+            line-height: 1.6;
+        }
+        
+        .container {
+            max-width: 1300px;
+            margin: 0 auto;
+        }
+        
+        header {
+            text-align: center;
+            margin-bottom: 30px;
+            padding: 20px;
+            background: linear-gradient(135deg, var(--primary-color), var(--dark-color));
+            color: white;
+            border-radius: 10px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            position: relative;
+        }
+        
+        h1 {
+            font-size: 2.5rem;
+            margin-bottom: 10px;
+        }
+        
+        .time-display {
+            margin-top: 15px;
+            padding: 10px;
+            background: rgba(255, 255, 255, 0.2);
+            border-radius: 5px;
+            display: inline-block;
+            width: 80%;
+            max-width: 600px;
+        }
+        
+        .current-time {
+            font-size: 1.2rem;
+            font-weight: bold;
+            margin-bottom: 10px;
+        }
+        
+        .time-navigation {
+            font-size: 0.9rem;
+            opacity: 0.8;
+            margin-bottom: 10px;
+        }
+
+        
+        .time-selector {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 10px;
+            margin-top: 10px;
+            margin-bottom: 10px;
+            
+        }
+
+        .time-selector label{
+            font-size: 1.2rem;
+            font-weight: bold;
+        }
+        
+        .time-selector select {
+            padding: 8px 12px;
+            border-radius: 5px;
+            border: none;
+            background-color: white;
+            color: var(--dark-color);
+            font-size: 1.2rem;
+            font-weight: bold;
+            min-width: 200px;
+            cursor: pointer;
+        }
+        
+        .time-selector select:focus {
+            outline: 2px solid var(--primary-color);
+        }
+        
+        .auto-update-indicator {
+            margin-top: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            font-size: 0.85rem;
+        }
+        
+        .update-dot {
+            width: 10px;
+            height: 10px;
+            border-radius: 50%;
+            background-color: var(--success-color);
+            animation: pulse 2s infinite;
+        }
+        
+        @keyframes pulse {
+            0% { opacity: 1; }
+            50% { opacity: 0.5; }
+            100% { opacity: 1; }
+        }
+        
+        .dashboard {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 20px;
+            margin-bottom: 30px;
+        }
+        
+        .card {
+            background: white;
+            border-radius: 10px;
+            padding: 20px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05);
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+        
+        .card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 6px 12px rgba(0, 0, 0, 0.1);
+        }
+        
+        .card-header {
+            display: flex;
+            align-items: center;
+            margin-bottom: 15px;
+            border-bottom: 1px solid #eee;
+            padding-bottom: 10px;
+        }
+        
+        .card-title {
+            font-size: 1.3rem;
+            font-weight: 600;
+            color: var(--dark-color);
+        }
+        
+        .icon {
+            margin-right: 10px;
+            font-size: 1.5rem;
+        }
+        
+        .mode-indicator {
+            display: flex;
+            justify-content: space-around;
+            margin: 15px 0;
+        }
+        
+        .mode {
+            text-align: center;
+            padding: 10px;
+            border-radius: 8px;
+            flex: 1;
+            margin: 0 5px;
+        }
+        
+        .mode.active {
+            background-color: var(--success-color);
+            color: white;
+        }
+        
+        .mode.inactive {
+            background-color: var(--gray-color);
+            color: white;
+        }
+        
+        .heartbeat-container {
+            display: flex;
+            justify-content: space-around;
+            margin: 20px 0;
+        }
+        
+        .heartbeat {
+            text-align: center;
+            position: relative;
+        }
+        
+        .heartbeat-value {
+            font-size: 2rem;
+            font-weight: bold;
+            color: var(--primary-color);
+            margin: 10px 0;
+        }
+        
+        .heartbeat-label {
+            font-size: 0.9rem;
+            color: var(--gray-color);
+        }
+        
+        .priority-grid, .status-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+            gap: 10px;
+            margin-top: 15px;
+        }
+        
+        .priority-item, .status-item {
+            display: flex;
+            align-items: center;
+            padding: 10px;
+            border-radius: 5px;
+            background-color: var(--light-color);
+        }
+        
+        .priority-badge {
+            width: 25px;
+            height: 25px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-weight: bold;
+            margin-right: 10px;
+        }
+        
+        .priority-1 { background-color: var(--success-color); }
+        .priority-2 { background-color: var(--warning-color); }
+        .priority-3 { background-color: var(--danger-color); }
+        
+        .status-item.active {
+            background-color: var(--success-color);
+            color: white;
+        }
+        
+        .status-item.inactive {
+            background-color: var(--gray-color);
+            color: white;
+        }
+        
+        .device-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 15px;
+        }
+        
+        .device-table th, .device-table td {
+            padding: 12px 15px;
+            min-width: 78px;
+            text-align: left;
+            border-bottom: 1px solid #eee;
+        }
+        
+        .device-table th {
+            background-color: var(--light-color);
+            font-weight: 600;
+        }
+        
+        .device-table tr:hover {
+            background-color: #f9f9f9;
+        }
+        
+        .status-badge {
+            padding: 5px 10px;
+            border-radius: 15px;
+            font-size: 0.8rem;
+            font-weight: bold;
+        }
+        
+        .status-online {
+            background-color: var(--success-color);
+            color: white;
+        }
+        
+        .status-offline {
+            background-color: var(--gray-color);
+            color: white;
+        }
+        
+        .status-warning {
+            background-color: var(--warning-color);
+            color: white;
+        }
+        
+        .temperature-gauge {
+            height: 10px;
+            background-color: #eee;
+            border-radius: 5px;
+            margin-top: 5px;
+            overflow: hidden;
+        }
+        
+        .temperature-fill {
+            height: 100%;
+            border-radius: 5px;
+            background: linear-gradient(90deg, #3498db, #e74c3c);
+        }
+        
+        .data-row {
+            display: flex;
+            justify-content: space-between;
+            margin: 10px 0;
+            padding-bottom: 10px;
+            border-bottom: 1px dashed #eee;
+        }
+        
+        .data-label {
+            font-weight: 600;
+            color: var(--dark-color);
+        }
+        
+        .data-value {
+            color: var(--primary-color);
+            font-weight: 500;
+        }
+        
+        .temperature-container {
+            display: flex;
+            justify-content: space-between;
+            margin: 10px 0;
+        }
+        
+        .temperature-box {
+            text-align: center;
+            flex: 1;
+            padding: 10px;
+            border-radius: 5px;
+            background-color: var(--light-color);
+            margin: 0 5px;
+        }
+        
+        .temperature-value {
+            font-size: 1.2rem;
+            font-weight: bold;
+            color: var(--primary-color);
+        }
+        
+        .temperature-label {
+            font-size: 0.8rem;
+            color: var(--gray-color);
+        }
+        
+        @media (max-width: 768px) {
+            .dashboard {
+                grid-template-columns: 1fr;
+            }
+            
+            .priority-grid, .status-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .mode-indicator, .heartbeat-container {
+                flex-direction: column;
+            }
+            
+            .mode, .heartbeat {
+                margin: 5px 0;
+            }
+            
+            .time-selector {
+                flex-direction: column;
+            }
+            
+            .time-selector select {
+                width: 100%;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>HVAC监控面板</h1>
+            <p>实时监控冷水机组、冷凝泵和冷却塔系统状态</p>
+            <div class="time-display">
+                <!-- <div class="current-time" id="current-time">正在加载数据...</div> -->
+                <div class="time-selector">
+                    <label for="time-select">选择数据时间点：</label>
+                    <select id="time-select">
+                        <option value="">加载中...</option>
+                    </select>
+                </div>
+                <div class="time-navigation" id="time-navigation">使用键盘 ↑↓ 键或下拉列表切换时间点</div>
+                <div class="auto-update-indicator">
+                    <div class="update-dot"></div>
+                    <span>数据每30秒自动更新</span>
+                </div>
+            </div>
+        </header>
+        
+        <div class="dashboard">
+            <!-- 系统模式卡片 -->
+            <div class="card">
+                <div class="card-header">
+                    <div class="icon">⚙️</div>
+                    <h2 class="card-title">系统控制模式</h2>
+                </div>
+                <div class="mode-indicator">
+                    <div class="mode inactive" id="optimization-mode">
+                        <div>优化模式</div>
+                        <div>已关闭</div>
+                    </div>
+                    <div class="mode inactive" id="winter-mode">
+                        <div>冬季模式</div>
+                        <div>已关闭</div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- 心跳数据卡片  -->
+            <div class="card">
+                <div class="card-header">
+                    <div class="icon">❤️</div>
+                    <h2 class="card-title">系统心跳</h2>
+                </div>
+                <div class="heartbeat-container">
+                    <div class="heartbeat">
+                        <div class="heartbeat-label">PLC心跳</div>
+                        <div class="heartbeat-value" id="heartbeat-1">-</div>
+                    </div>
+                    <div class="heartbeat">
+                        <div class="heartbeat-label">AI心跳</div>
+                        <div class="heartbeat-value" id="heartbeat-2">-</div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- 请求状态卡片 -->
+            <div class="card">
+                <div class="card-header">
+                    <div class="icon">📡</div>
+                    <h2 class="card-title">设备请求数量</h2>
+                </div>
+                <div class="status-grid" id="request-status">
+                    <!-- 请求状态将通过JS动态生成 -->
+                </div>
+            </div>
+        </div>
+        
+        <!-- 冷水机组状态表格 -->
+        <div class="card">
+            <div class="card-header">
+                <div class="icon">❄️</div>
+                <h2 class="card-title">冷水机组状态</h2>
+            </div>
+            <div class="device-table-container">
+                <table class="device-table">
+                    <thead>
+                        <tr>
+                            <th>设备ID</th>
+                            <th>状态</th>
+                            <th>负载</th>
+                            <th>优先级</th>
+                            <th>自动状态</th>
+                            <th>控制状态</th>
+                            <th>故障状态</th>
+                            <th>回水温度</th>
+                            <th>供水温度</th>
+                            <th>设定温度</th>
+                            <th>冷凝水出水温度</th>
+                            <th>冷凝水回水温度</th>
+                        </tr>
+                    </thead>
+                    <tbody id="chiller-table-body">
+                        <!-- 冷水机组数据将通过JS动态生成 -->
+                    </tbody>
+                </table>
+            </div>
+        </div>
+        
+        <!-- 冷凝泵状态表格 -->
+        <div class="card">
+            <div class="card-header">
+                <div class="icon">💧</div>
+                <h2 class="card-title">冷凝泵状态</h2>
+            </div>
+            <div class="device-table-container">
+                <table class="device-table">
+                    <thead>
+                        <tr>
+                            <th>设备ID</th>
+                            <th>状态</th>
+                            <th>优先级</th>
+                            <th>自动状态</th>
+                            <th>控制状态</th>
+                            <th>故障状态</th>
+                            <th>速度</th>
+                        </tr>
+                    </thead>
+                    <tbody id="condenser-pump-table-body">
+                        <!-- 冷凝泵数据将通过JS动态生成 -->
+                    </tbody>
+                </table>
+            </div>
+        </div>
+        
+        <!-- 冷却塔状态表格 -->
+        <div class="card">
+            <div class="card-header">
+                <div class="icon">🌡️</div>
+                <h2 class="card-title">冷却塔状态</h2>
+            </div>
+            <div class="device-table-container">
+                <table class="device-table">
+                    <thead>
+                        <tr>
+                            <th>设备ID</th>
+                            <th>状态</th>
+                            <th>优先级</th>
+                            <th>自动状态</th>
+                            <th>控制状态</th>
+                            <th>故障状态</th>
+                            <th>速度</th>
+                        </tr>
+                    </thead>
+                    <tbody id="cooling-tower-table-body">
+                        <!-- 冷却塔数据将通过JS动态生成 -->
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // 全局变量
+        let groupedData = {};
+        let currentTimeKeys = [];
+        let currentTimeIndex = 0;
+        let lastUpdateTime = null;
+        let updateInterval = null;
+
+        // InfluxDB配置
+        const INFLUX_CONFIG = {
+            url: 'https://influxdb2.cloud-building.com',
+            token: 'X3VOqa8nUqoDlh5aaSBtIYdnl2pN_H30eQh6uhEI6AivgRO1aCkjoCqOnDNFFPnjaU43yTHeoszwCiMvMhTc2g==',
+            org: 'sysOrg',
+            bucket: 'Buckets_saas_test_yin'
+        };
+
+        // 初始化页面
+        document.addEventListener('DOMContentLoaded', function() {
+            // 获取并更新所有数据
+            fetchDataFromInflux();
+            
+            // 添加键盘事件监听
+            document.addEventListener('keydown', handleKeyDown);
+            
+            // 添加下拉列表事件监听
+            document.getElementById('time-select').addEventListener('change', handleTimeSelectChange);
+            
+            // 启动30秒增量更新
+            startIncrementalUpdate();
+        });
+
+        // 启动增量更新
+        function startIncrementalUpdate() {
+            // 清除现有定时器
+            if (updateInterval) {
+                clearInterval(updateInterval);
+            }
+            
+            // 每30秒更新一次数据
+            updateInterval = setInterval(async () => {
+                await incrementalUpdate();
+            }, 30000);
+        }
+
+        // 增量更新数据
+        async function incrementalUpdate() {
+            try {
+                console.log('执行增量更新...');
+                
+                // 获取最新数据（仅获取最近几分钟的数据）
+                const query = `
+                    from(bucket: "${INFLUX_CONFIG.bucket}")
+                        |> range(start: -1m)
+                        |> filter(fn: (r) => r["_measurement"] =~ /^device_mqttpayload_data_/ and not r["_measurement"] =~ /^device_mqttpayload_data_PM_/)
+                        |> keep(columns: ["_time", "_measurement", "_value"])
+                        |> group(columns: ["_time"])
+                        |> sort(columns: ["_time", "_measurement"])
+                `;
+                
+                const newData = await fetchFluxData(query);
+                
+                if (!newData || newData.length === 0) {
+                    console.log('没有获取到新数据');
+                    return;
+                }
+                
+                // 按时间分组新数据
+                const newGroupedData = groupDataByTime(newData);
+                
+                // 合并到现有数据中
+                Object.keys(newGroupedData).forEach(timeKey => {
+                    // 如果这个时间点已存在，更新数据；否则添加新时间点
+                    groupedData[timeKey] = newGroupedData[timeKey];
+                });
+                
+                // 更新可用时间点列表
+                currentTimeKeys = Object.keys(groupedData).sort().reverse();
+                
+                // 如果当前选中的是最新数据，则自动更新到最新
+                if (currentTimeIndex === 0) {
+                    // 重新计算当前索引（因为可能有新的时间点加入）
+                    currentTimeIndex = 0;
+                    updateTimeDisplay();
+                    updateTimeSelect();
+                    updateUIData(groupedData[currentTimeKeys[currentTimeIndex]]);
+                } else {
+                    // 如果不是最新数据，只更新时间下拉列表，保持当前视图
+                    updateTimeSelect();
+                }
+                
+                // 更新最后更新时间
+                lastUpdateTime = new Date();
+                console.log('增量更新完成');
+                
+            } catch (error) {
+                console.error('增量更新失败:', error);
+            }
+        }
+
+        // 键盘事件处理
+        function handleKeyDown(event) {
+            if (currentTimeKeys.length <= 1) return;
+            
+            switch(event.key) {
+                case 'ArrowUp':
+                    event.preventDefault();
+                    if (currentTimeIndex < currentTimeKeys.length - 1) {
+                        currentTimeIndex++;
+                        updateTimeDisplay();
+                        updateUIData(groupedData[currentTimeKeys[currentTimeIndex]]);
+                        updateTimeSelect();
+                    }
+                    break;
+                case 'ArrowDown':
+                    event.preventDefault();
+                    if (currentTimeIndex > 0) {
+                        currentTimeIndex--;
+                        updateTimeDisplay();
+                        updateUIData(groupedData[currentTimeKeys[currentTimeIndex]]);
+                        updateTimeSelect();
+                    }
+                    break;
+            }
+        }
+
+        // 时间选择下拉列表事件处理
+        function handleTimeSelectChange(event) {
+            const selectedTime = event.target.value;
+            if (selectedTime && groupedData[selectedTime]) {
+                currentTimeIndex = currentTimeKeys.indexOf(selectedTime);
+                updateTimeDisplay();
+                updateUIData(groupedData[selectedTime]);
+            }
+        }
+
+        // 更新时间显示
+        function updateTimeDisplay() {
+            const currentTimeElement = document.getElementById('current-time');
+            const timeNavigationElement = document.getElementById('time-navigation');
+            
+            if (currentTimeKeys.length > 0) {
+                const currentTime = currentTimeKeys[currentTimeIndex];
+                //currentTimeElement.textContent = `数据时间: ${currentTime}`;
+                timeNavigationElement.textContent = `使用键盘 ↑↓ 键或下拉列表切换时间点 (${currentTimeIndex + 1}/${currentTimeKeys.length})`;
+            } else {
+                //currentTimeElement.textContent = '暂无数据';
+                timeNavigationElement.textContent = '';
+            }
+        }
+
+        // 更新下拉列表选项
+        function updateTimeSelect() {
+            const timeSelect = document.getElementById('time-select');
+            timeSelect.innerHTML = '';
+            
+            currentTimeKeys.forEach((time, index) => {
+                const option = document.createElement('option');
+                option.value = time;
+                option.textContent = time;
+                if (index === currentTimeIndex) {
+                    option.selected = true;
+                }
+                timeSelect.appendChild(option);
+            });
+        }
+
+        // 从InfluxDB获取数据
+        async function fetchDataFromInflux() {
+            try {
+                // 获取系统模式数据
+                const chillerQuery = await fetchFluxData(`
+                    from(bucket: "${INFLUX_CONFIG.bucket}")
+                        |> range(start: -2d)
+                        |> filter(fn: (r) => r["_measurement"] =~ /^device_mqttpayload_data_/ and not r["_measurement"] =~ /^device_mqttpayload_data_PM_/)
+                        |> keep(columns: ["_time", "_measurement", "_value"])
+                        |> group(columns: ["_time"])
+                        |> sort(columns: ["_time", "_measurement"])
+                `);
+                
+                // 按时间分组数据
+                groupedData = groupDataByTime(chillerQuery);
+                console.log('按时间分组的数据:', groupedData);
+                
+                // 获取所有时间点并排序（最新的在前）
+                currentTimeKeys = Object.keys(groupedData).sort().reverse();
+                currentTimeIndex = 0; // 默认显示最新的数据
+                
+                // 更新UI
+                updateTimeDisplay();
+                updateTimeSelect();
+                updateUIData(groupedData[currentTimeKeys[currentTimeIndex]]);
+                
+            } catch (error) {
+                console.error('Error fetching data from InfluxDB:', error);
+                // 使用模拟数据作为后备
+                //useMockData();
+            }
+        }
+
+        // 使用模拟数据
+        function useMockData() {
+            // 生成模拟的时间点
+            const now = new Date();
+            const mockTimes = [];
+            
+            for (let i = 0; i < 5; i++) {
+                const time = new Date(now.getTime() - i * 60000); // 每分钟一个数据点
+                const formattedTime = time.toISOString().replace('T', ' ').substring(0, 19);
+                mockTimes.push(formattedTime);
+                
+                // 为每个时间点创建模拟数据
+                groupedData[formattedTime] = JSON.parse(JSON.stringify(systemData));
+                
+                // 为不同时间点添加一些变化
+                if (i > 0) {
+                    groupedData[formattedTime].systemControls.w_heartbeat_1 = Math.floor(Math.random() * 100) + 400;
+                    groupedData[formattedTime].systemControls.w_heartbeat_2 = Math.floor(Math.random() * 20) + 30;
+                }
+            }
+            
+            currentTimeKeys = mockTimes;
+            currentTimeIndex = 0;
+            
+            // 更新UI
+            updateTimeDisplay();
+            updateTimeSelect();
+            updateUIData(groupedData[currentTimeKeys[currentTimeIndex]]);
+        }
+
+        const fetchFluxData = async (fluxQuery) => {
+            const url = new URL('https://cbosv3-sandbox.cloud-building.com/api/v1/internal/query')
+            const organization = '55'
+            const token =
+                'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjI3IiwiaWRUeXBlIjoiYXBwbGljYXRpb24iLCJpYXQiOjE3NDc1NTcwNjA3NDcsImV4cGlyZSI6MjA2MjkxNzA2MDc0N30.MDj5wYRk461YZdyC53zljEFR9GklXVYAEugrlleiyz0'
+
+            // 设置 URL 参数
+            url.searchParams.append('fluxQuery', fluxQuery)
+
+            const response = await fetch(url, {
+                headers: {
+                accept: 'application/json', // 指定返回 JSON 格式
+                organization, // 组织 ID
+                Authorization: `Bearer ${token}`,
+                },
+            })
+
+            if (!response.ok) {
+                throw new Error(`HTTP error! status: ${response.status}`)
+            }
+
+            // 获取数据
+            const data = await response.json()
+            return data.data
+        }
+
+        // 按时间分组数据的函数
+        function groupDataByTime(data) {
+            const grouped = {};
+            
+            data.forEach(item => {
+                //将 UTC 时间字符串转换为东八区时间
+                const time = formatToChinaTime(item._time);
+                if (!grouped[time]) {
+                    grouped[time] = {};
+                }
+                // 以_measurement为键，_value为值存储
+                const itemKey = item._measurement.replace('device_mqttpayload_data_', '');
+                grouped[time][itemKey] = item._value;
+            });
+            
+            const formattedData = {};
+            Object.keys(grouped).forEach(key => {
+                const value = grouped[key];
+                const data = structureByDeviceType(value);
+                formattedData[key] = data;
+            });
+            return formattedData;
+        }
+
+        // 结构化json对象
+        function structureByDeviceType(data) {
+            const structured = {
+                // 冷水机组相关
+                chillers: {},
+                // 冷却水泵相关
+                condenserPumps: {},
+                // 冷冻水泵相关
+                chilledWaterPumps: {},
+                // 冷却塔相关
+                coolingTowers: {},
+                // 系统模式和心跳
+                systemControls: {},
+                // 优先级设置
+                priorities: {},
+                // Request和状态
+                status: {}
+            };
+
+            Object.keys(data).forEach(key => {
+                const value = data[key];
+            
+                // 冷水机组 (CH)  
+                if ((key.startsWith('CH') && !key.startsWith('CHWP')) || key.startsWith('w_CH_')) {
+                let chKey = key.replace(/^(w_)?CH_/, '');
+                //这样只会删除"CH"部分，保留后面的数字
+                chKey = chKey.replace(/^CH(?=\d)/, '');
+                if (chKey.includes('_')) {
+                        const [device, ...rest] = chKey.split('_');
+                        const devicename = 'CH_' + device;
+                        if (!structured.chillers[devicename]) 
+                        structured.chillers[devicename] = {};
+                        structured.chillers[devicename][rest.join('_')] = value;
+                    } else {
+                        structured.chillers[chKey] = value;
+                    }
+                }
+                // 冷却水泵 (CDWP)
+                else if (key.startsWith('CDWP_') || key.startsWith('w_CDWP_')) {
+                    const pumpKey = key.replace(/^(w_)?CDWP_/, '');
+                    if (pumpKey.includes('_')) {
+                        const [device, ...rest] = pumpKey.split('_');
+                        const devicename = 'CDWP_' + device;
+                        if (!structured.condenserPumps[devicename]) 
+                        structured.condenserPumps[devicename] = {};
+                        structured.condenserPumps[devicename][rest.join('_')] = value;
+                    } else {
+                        structured.condenserPumps[pumpKey] = value;
+                    }
+                }
+                // 冷冻水泵 (CHWP)
+                else if (key.startsWith('CHWP_')) {
+                    const pumpKey = key.replace('CHWP_', '');
+                    if (pumpKey.includes('_')) {
+                        const [device, ...rest] = pumpKey.split('_');
+                        const devicename = 'CHWP_' + device;
+                        if (!structured.chilledWaterPumps[devicename]) 
+                        structured.chilledWaterPumps[devicename] = {};
+                        structured.chilledWaterPumps[devicename][rest.join('_')] = value;
+                    } else {
+                        structured.chilledWaterPumps[pumpKey] = value;
+                    }
+                }
+                // 冷却塔 (CT)
+                else if (key.startsWith('CT_') || key.startsWith('w_CT_')) {
+                const ctkey = key.replace(/^(w_)?CT_/, '');
+                if (ctkey.includes('_')) {
+                        const [device, ...rest] = ctkey.split('_');
+                        const devicename = 'CT_' + device;
+                        if (!structured.coolingTowers[devicename]) 
+                        structured.coolingTowers[devicename] = {};
+                        structured.coolingTowers[devicename][rest.join('_')] = value;
+                    } else {
+                        structured.coolingTowers[ctkey] = value;
+                    }
+                }
+                // 系统控制
+                else if (key.startsWith('b_') || key.startsWith('w_heartbeat')) {
+                    structured.systemControls[key] = value;
+                }
+                else {
+                    structured.status[key] = value;
+                }
+
+                // 优先级
+                if (key.startsWith('w_') && key.includes('Priority')) {
+                    structured.priorities[key] = value;
+                }
+                // 请求状态
+                else if (key.startsWith('w_') && key.includes('Request')) {
+                    structured.status[key] = value;
+                }
+            });
+
+            return structured;
+        }
+
+        // 将 UTC 时间字符串转换为东八区时间的函数
+        function formatToChinaTime(utcTimeString) {
+            // 创建 Date 对象（会自动识别为 UTC 时间）
+            const utcDate = new Date(utcTimeString);
+            
+            // 转换为东八区时间（UTC+8）
+            const chinaTime = new Date(utcDate.getTime() + 8 * 60 * 60 * 1000);
+            
+            // 格式化为本地时间字符串
+            const formattedTime = chinaTime.toISOString().replace('T', ' ').substring(0, 19);
+            
+            return formattedTime;
+        }
+
+        // 更新UI数据
+        function updateUIData(data) {
+            // 设置系统模式
+            document.getElementById('optimization-mode').className = 
+                data.systemControls.b_Optimization_Mode ? 'mode active' : 'mode inactive';
+            document.getElementById('winter-mode').className = 
+                data.systemControls.b_Winter_Mode ? 'mode active' : 'mode inactive';
+            
+            // 设置心跳数据
+            document.getElementById('heartbeat-1').textContent = data.systemControls.w_heartbeat_1;
+            document.getElementById('heartbeat-2').textContent = data.systemControls.w_heartbeat_2;
+            
+            // 生成请求状态
+            const requestStatusContainer = document.getElementById('request-status');
+            requestStatusContainer.innerHTML = '';
+            for (const [key, value] of Object.entries(data.status)) {
+                const statusItem = document.createElement('div');
+                statusItem.className = value ? 'status-item active' : 'status-item inactive';
+                statusItem.innerHTML = `
+                    <div>${key.replace('w_', '').replace('_Request', ' : ')}</div>
+                    <div>${value}</div>
+                `;
+                requestStatusContainer.appendChild(statusItem);
+            }
+            
+            // 生成冷水机组表格数据
+            let formattedData = [];
+            Object.keys(data.chillers).forEach(key => {
+                const obj = data.chillers[key];
+                // chwp的 auto,trip作为CH的auto,trip
+                const chwpKey = key.replace('CH_', 'CHWP_');
+                const chwpObj = data.chilledWaterPumps[chwpKey];
+                if (!obj) return;
+                if (Object.keys(obj).length < 5) return;
+                const formattedObj = {
+                    id: key,
+                    status: obj.Current_Draw,
+                    load: obj.Current_Draw,
+                    priority: obj.Priority,
+                    auto: chwpObj ? chwpObj.Auto_Sta : 0,
+                    trip: chwpObj ? chwpObj.Trip : 0,
+                    control: obj.Control,
+                    supplyTemp: obj.CHWS_Temp ? parseFloat(obj.CHWS_Temp).toFixed(1) : null,
+                    returnTemp: obj.CHWR_Temp ? parseFloat(obj.CHWR_Temp).toFixed(1) : null,
+                    setTemp: obj.CHWST_SP ? parseFloat(obj.CHWST_SP).toFixed(1) : null,
+                    CDWS_Temp: obj.CDWS_Temp ? parseFloat(obj.CDWS_Temp).toFixed(1) : null,
+                    CDWR_Temp: obj.CDWR_Temp ? parseFloat(obj.CDWR_Temp).toFixed(1) : null
+                }
+                formattedData.push(formattedObj);
+            });
+            const chillerTableBody = document.getElementById('chiller-table-body');
+            chillerTableBody.innerHTML = '';
+            formattedData.forEach(chiller => {
+                const row = document.createElement('tr');
+                if (!chiller.status) 
+                    row.bgColor = '#ecf0f1';
+                row.innerHTML = `
+                    <td>${chiller.id}</td>
+                    <td><span class="status-badge ${chiller.status ? 'status-online' : 'status-offline'}">${chiller.status ? '运行' : '停止'}</span></td>
+                    <td>${chiller.load > 0 ? Math.round(chiller.load) + '%' : '-'}</td>
+                    <td><span class="priority-badge priority-${chiller.priority}">${chiller.priority}</span></td>
+                    <td>${chiller.auto ? '自动' : '手动'}</td>
+                    <td>${chiller.control ? '受控' : '未控'}</td>
+                    <td><span class="status-badge ${chiller.trip ? 'status-warning' : 'status-online'}">${chiller.trip ? '故障' : '正常'}</span></td>
+
+                    <td>${chiller.returnTemp ? chiller.returnTemp + '°C' : 'N/A'}</td>
+                    <td>${chiller.supplyTemp ? chiller.supplyTemp + '°C' : 'N/A'}</td>
+                    <td>${chiller.setTemp ? chiller.setTemp + '°C' : 'N/A'}</td>
+                    <td>${chiller.CDWS_Temp ? chiller.CDWS_Temp + '°C' : 'N/A'}</td>
+                    <td>${chiller.CDWR_Temp ? chiller.CDWR_Temp + '°C' : 'N/A'}</td>
+                `;
+                chillerTableBody.appendChild(row);
+            });
+            
+            // 生成冷凝泵表格数据
+            formattedData = [];
+            Object.keys(data.condenserPumps).forEach(key => {
+                const obj = data.condenserPumps[key];
+                if (!obj) return;
+                if (Object.keys(obj).length < 5) return;
+                const formattedObj = {
+                    id: key,
+                    status: obj.OnOff_Sta,
+                    priority: obj.Priority,
+                    auto: obj.Auto_Sta,
+                    trip: obj.Trip,
+                    control: obj.Control,
+                    speed: obj.Speed_Control,
+                }
+                formattedData.push(formattedObj);
+            });
+            
+            const condenserPumpTableBody = document.getElementById('condenser-pump-table-body');
+            condenserPumpTableBody.innerHTML = '';
+            formattedData.forEach(pump => {
+                const row = document.createElement('tr');
+                if (!pump.status) 
+                    row.bgColor = '#ecf0f1';
+                row.innerHTML = `
+                    <td>${pump.id}</td>
+                    <td><span class="status-badge ${pump.status ? 'status-online' : 'status-offline'}">${pump.status ? '运行' : '停止'}</span></td>
+                    <td><span class="priority-badge priority-${pump.priority}">${pump.priority}</span></td>
+                    <td>${pump.auto ? '自动' : '手动'}</td>
+                    <td>${pump.control ? '受控' : '未控'}</td>
+                    <td><span class="status-badge ${pump.trip ? 'status-warning' : 'status-online'}">${pump.trip ? '故障' : '正常'}</span></td>
+                    <td>${(pump.speed > 0 && pump.status) ? pump.speed + ' RPM' : '-'}</td>
+                `;
+                condenserPumpTableBody.appendChild(row);
+            });
+            
+            // 生成冷却塔表格数据
+            formattedData = [];
+            Object.keys(data.coolingTowers).forEach(key => {
+                const obj = data.coolingTowers[key];
+                if (!obj) return;
+                if (Object.keys(obj).length < 5) return;
+                const formattedObj = {
+                    id: key,
+                    status: obj.OnOff_Sta,
+                    priority: obj.Priority,
+                    auto: obj.Auto_Sta,
+                    trip: obj.Trip,
+                    control: obj.Control,
+                    speed: obj.Speed_Control,
+                }
+                formattedData.push(formattedObj);
+            });
+            
+            const coolingTowerTableBody = document.getElementById('cooling-tower-table-body');
+            coolingTowerTableBody.innerHTML = '';
+            formattedData.forEach(tower => {
+                const row = document.createElement('tr');
+                if (!tower.status) 
+                    row.bgColor = '#ecf0f1';
+                row.innerHTML = `
+                    <td>${tower.id}</td>
+                    <td><span class="status-badge ${tower.status ? 'status-online' : 'status-offline'}">${tower.status ? '运行' : '停止'}</span></td>
+                    <td><span class="priority-badge priority-${tower.priority}">${tower.priority}</span></td>
+                    <td>${tower.auto ? '自动' : '手动'}</td>
+                    <td>${tower.control ? '受控' : '未控'}</td>
+                    <td><span class="status-badge ${tower.trip ? 'status-warning' : 'status-online'}">${tower.trip ? '故障' : '正常'}</span></td>
+                    <td>${(tower.speed > 0 && tower.status)? tower.speed + ' RPM' : '-'}</td>
+                `;
+                coolingTowerTableBody.appendChild(row);
+            });
+        }
+
+        // 模拟数据 - 在实际应用中，这应该来自InfluxDB API调用
+        const systemData = {
+            "chillers": {
+                "CH_1": {
+                    "CDWR_Temp": 31.941248,
+                    "CDWS_Temp": 31.830151,
+                    "CHWR_Temp": 17.998199,
+                    "CHWST_SP": 10.5,
+                    "CHWST_SP_Control": 10.5,
+                    "CHWS_Temp": 16.053949,
+                    "COND_SAT_Pressure": 411.619568,
+                    "COND_SAT_Temp": 16.553898,
+                    "Comp_A_Current": 0,
+                    "Comp_B_Current": 0,
+                    "Comp_C_Current": 0,
+                    "Current_Draw": 0,
+                    "Demand_Limit_SP": 95,
+                    "EVAP_SAT_Pressure": 410.930084,
+                    "EVAP_SAT_Temp": 16.49835,
+                    "Running_Current": 0,
+                    "CHW_Valve_Control": 0,
+                    "CHW_Valve_Sta": 0,
+                    "Control": 0,
+                    "Priority": 2
+                },
+                "CH_3": {
+                    "CDWR_Temp": 31.885698,
+                    "CDWS_Temp": 37.940651,
+                    "CHWR_Temp": 12.05435,
+                    "CHWST_SP": 9.2,
+                    "CHWST_SP_Control": 9.2,
+                    "CHWS_Temp": 8.9991,
+                    "COND_SAT_Pressure": 1021.809387,
+                    "COND_SAT_Temp": 43.717846,
+                    "Comp_A_Current": 78.5,
+                    "Comp_B_Current": 78.800003,
+                    "Comp_C_Current": 79.5,
+                    "Current_Draw": 78.800003,
+                    "Demand_Limit_SP": 95,
+                    "EVAP_SAT_Pressure": 261.312927,
+                    "EVAP_SAT_Temp": 6.054951,
+                    "Running_Current": 0,
+                    "CHW_Valve_Control": 1,
+                    "CHW_Valve_Sta": 1,
+                    "Control": 1,
+                    "Priority": 1
+                },
+                "CH_4": {
+                    "CDWR_Temp": 32.218998,
+                    "CDWS_Temp": 36.218597,
+                    "CDW_Valve_Sta": 1,
+                    "CHWR_Temp": 11.05445,
+                    "CHWST_SP": 10,
+                    "CHWST_SP_Control": 10,
+                    "CHWS_Temp": 8.4436,
+                    "CHW_Valve_Sta": 1,
+                    "COND_SAT_Pressure": 866.676392,
+                    "COND_SAT_Temp": 38.107296,
+                    "Comp_A_Current": 61.799999,
+                    "Comp_B_Current": 63.900002,
+                    "Comp_C_Current": 61.099998,
+                    "Current_Draw": 62.099998,
+                    "Demand_Limit_SP": 97,
+                    "EVAP_SAT_Pressure": 286.134216,
+                    "EVAP_SAT_Temp": 7.943649,
+                    "Running_Current": 187.045197,
+                    "CHW_Valve_Control": 1,
+                    "Control": 1,
+                    "Priority": 1
+                }
+            },
+            "condenserPumps": {
+                "CDWP_1": {
+                    "Auto_Sta": 1,
+                    "Control": 1,
+                    "OnOff_Sta": 1,
+                    "Trip": 0,
+                    "Priority": 1
+                },
+                "CDWP_2": {
+                    "Auto_Sta": 0,
+                    "Control": 0,
+                    "OnOff_Sta": 0,
+                    "Trip": 0,
+                    "Priority": 2
+                },
+                "CDWP_3": {
+                    "Auto_Sta": 0,
+                    "Control": 0,
+                    "OnOff_Sta": 0,
+                    "Trip": 0,
+                    "Priority": 3
+                },
+                "CDWP_4": {
+                    "Auto_Sta": 1,
+                    "Control": 0,
+                    "OnOff_Sta": 0,
+                    "Speed_Control": 600,
+                    "Trip": 0,
+                    "Priority": 2
+                },
+                "CDWP_5": {
+                    "Auto_Sta": 1,
+                    "Control": 1,
+                    "OnOff_Sta": 1,
+                    "Speed_Control": 600,
+                    "Trip": 0,
+                    "Priority": 1
+                }
+            },
+            "chilledWaterPumps": {
+                "CHWP_1": {
+                    "Auto_Sta": 0,
+                    "Control": 0,
+                    "OnOff_Sta": 0,
+                    "Trip": 0
+                },
+                "CHWP_3": {
+                    "Auto_Sta": 1,
+                    "Control": 1,
+                    "OnOff_Sta": 1,
+                    "Trip": 0
+                },
+                "CHWP_4": {
+                    "Auto_Sta": 1,
+                    "Control": 1,
+                    "OnOff_Sta": 1,
+                    "Trip": 0
+                }
+            },
+            "coolingTowers": {
+                "CT_1": {
+                    "Auto_Sta": 1,
+                    "Control": 1,
+                    "In_Valve_Control": 1,
+                    "In_Valve_Sta": 1,
+                    "OnOff_Sta": 1,
+                    "Out_Valve_Control": 1,
+                    "Out_Valve_Sta": 1,
+                    "Trip": 0,
+                    "Priority": 1
+                },
+                "CT_3": {
+                    "Auto_Sta": 0,
+                    "Control": 0,
+                    "In_Valve_Control": 0,
+                    "In_Valve_Sta": 0,
+                    "OnOff_Sta": 0,
+                    "Out_Valve_Control": 0,
+                    "Out_Valve_Sta": 0,
+                    "Trip": 0,
+                    "Priority": 2
+                },
+                "CT_4": {
+                    "Auto_Sta": 1,
+                    "Control": 1,
+                    "OnOff_Sta": 1,
+                    "Speed_Control": 1000,
+                    "Trip": 0,
+                    "Priority": 1
+                }
+            },
+            "systemControls": {
+                "b_Optimization_Mode": 0,
+                "b_Winter_Mode": 0,
+                "w_heartbeat_1": 455,
+                "w_heartbeat_2": 40
+            },
+            "status": {
+                "w_CDWP_A_Request": 1,
+                "w_CDWP_B_Request": 1,
+                "w_CH_A_Request": 1,
+                "w_CH_B_Request": 1,
+                "w_CT_A_Request": 1,
+                "w_CT_B_Request": 1
+            }
+        };
+    </script>
+</body>
+</html>

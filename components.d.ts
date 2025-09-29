@@ -9,6 +9,8 @@ export {}
 declare module 'vue' {
   export interface GlobalComponents {
     ChillerStrategy: typeof import('./src/components/ChillerStrategy.vue')['default']
+    ConfigurableNode: typeof import('./src/components/ConfigurableSystem/ConfigurableNode.vue')['default']
+    ConfigurableSystem: typeof import('./src/components/ConfigurableSystem/ConfigurableSystem.vue')['default']
     CustomNode: typeof import('./src/components/CustomNode.vue')['default']
     ElAffix: typeof import('element-plus/es')['ElAffix']
     ElAside: typeof import('element-plus/es')['ElAside']

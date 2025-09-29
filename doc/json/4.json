@@ -1,0 +1,110 @@
+[
+  {
+    "operate": "write",
+    "deviceCode": "Device1",
+    "tagCode": "b_Optimization_Mode",
+    "val": "1"
+  },
+  {
+    "operate": "write",
+    "deviceCode": "Device1",
+    "tagCode": "b_Winter_Mode",
+    "val": "0"
+  },
+  {
+    "operate": "write",
+    "deviceCode": "Device1",
+    "tagCode": "w_CH_1_Priority",
+    "val": "2"
+  },
+  {
+    "operate": "write",
+    "deviceCode": "Device1",
+    "tagCode": "w_CH_3_Priority",
+    "val": "1"
+  },
+  {
+    "operate": "write",
+    "deviceCode": "Device1",
+    "tagCode": "CH1_CHWST_SP_Control",
+    "val": "10"
+  },
+  {
+    "operate": "write",
+    "deviceCode": "Device1",
+    "tagCode": "CH3_CHWST_SP_Control",
+    "val": "9.6"
+  },
+  {
+    "operate": "write",
+    "deviceCode": "Device1",
+    "tagCode": "w_CH_A_Request",
+    "val": "2"
+  },
+  {
+    "operate": "write",
+    "deviceCode": "Device1",
+    "tagCode": "w_CH_B_Request",
+    "val": "0"
+  },
+  {
+    "operate": "write",
+    "deviceCode": "Device1",
+    "tagCode": "w_CDWP_1_Priority",
+    "val": "1"
+  },
+  {
+    "operate": "write",
+    "deviceCode": "Device1",
+    "tagCode": "w_CDWP_3_Priority",
+    "val": "2"
+  },
+  {
+    "operate": "write",
+    "deviceCode": "Device1",
+    "tagCode": "w_heartbeat_2",
+    "val": "100"
+  },
+  {
+    "operate": "write",
+    "deviceCode": "Device1",
+    "tagCode": "w_CDWP_2_Priority",
+    "val": "3"
+  },
+  {
+    "operate": "write",
+    "deviceCode": "Device1",
+    "tagCode": "w_CDWP_A_Request",
+    "val": "2"
+  },
+  {
+    "operate": "write",
+    "deviceCode": "Device1",
+    "tagCode": "w_CDWP_B_Request",
+    "val": "0"
+  },
+  {
+    "operate": "write",
+    "deviceCode": "Device1",
+    "tagCode": "w_CT_1_Priority",
+    "val": "1"
+  },
+  {
+    "operate": "write",
+    "deviceCode": "Device1",
+    "tagCode": "w_CT_3_Priority",
+    "val": "2"
+  },
+  {
+    "operate": "write",
+    "deviceCode": "Device1",
+    "tagCode": "w_CT_A_Request",
+    "val": "2"
+  },
+  {
+    "operate": "write",
+    "deviceCode": "Device1",
+    "tagCode": "w_CT_B_Request",
+    "val": "0"
+  }
+]
