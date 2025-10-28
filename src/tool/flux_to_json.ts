@@ -156,22 +156,24 @@ export const fluxToJson = (key: string, value: FluxRow[]) => {
   // 解析数据
   for (let i = 0, len = value.length; i < len; i++) {
     const { device, _field, _value } = value[i]
+    if (device === 'group') continue;
+
     if (device === 'system') {
       // 处理系统数据
-      ;(data.json as Record<string, SafeAny>)[_field] = _value
+      ; (data.json as Record<string, SafeAny>)[_field] = _value
       continue
     }
 
     // 处理 request 数据
     if (device === 'request') {
-      ;(data.request as SafeAny[]).push({ _field, _value })
+      ; (data.request as SafeAny[]).push({ _field, _value })
       continue
     }
 
     // 处理 mqtt 数据
     if (device === 'mqtt') {
       // console.log({ _field, _value })
-      ;(data.mqtt as SafeAny[]) = JSON.parse(_value as string)
+      ; (data.mqtt as SafeAny[]) = JSON.parse(_value as string)
       continue
     }
 
