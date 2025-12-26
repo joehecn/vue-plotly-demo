@@ -156,7 +156,7 @@ export const fluxToJson = (key: string, value: FluxRow[]) => {
   // 解析数据
   for (let i = 0, len = value.length; i < len; i++) {
     const { device, _field, _value } = value[i]
-    if (device === 'group') continue;
+    if (device === 'group' || device === 'err') continue;
 
     if (device === 'system') {
       // 处理系统数据
