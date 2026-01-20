@@ -710,7 +710,7 @@
                 const chillerQuery = await fetchFluxData(`
                     from(bucket: "${INFLUX_CONFIG.bucket}")
                         |> range(start: -2d)
-                        |> filter(fn: (r) => r["_measurement"] =~ /^device_mqttpayload_data_/ and not r["_measurement"] =~ /^device_mqttpayload_data_PM_/)
+                        |> filter(fn: (r) => r["_measurement"] =~ /^device_mqttpayload_data_/ and not r["_measurement"] =~ /^device_mqttpayload_data_PM_/ and r["_field"] != "write_time")
                         |> keep(columns: ["_time", "_measurement", "_value"])
                         |> group(columns: ["_time"])
                         |> sort(columns: ["_time", "_measurement"])
